@@ -33,6 +33,7 @@ public class Console {
                 System.out.println("No command found. Please try again.");
             }
         } while(!userCommand.equals("quit"));
+        in.close();
     }
 
     /**
