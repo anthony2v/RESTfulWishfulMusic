@@ -35,6 +35,9 @@ public class Console {
         } while(!userCommand.equals("quit"));
     }
 
+    /**
+     * Provides a list of commands and arguments to the user.
+     */
     public static void help() {
         System.out.println("listArtists");
         System.out.println("getArtistDetails [Nickname]");
@@ -49,6 +52,10 @@ public class Console {
         System.out.println("quit");
     }
 
+    /**
+     * Processes a line of input from the user. If it is valid, then it will call the appropriate method.
+     * @param completeCommand A complete command given by the user
+     */
     public static void processCommand(String completeCommand) {
         StringTokenizer commandProcessor = new StringTokenizer(completeCommand);
         String command = commandProcessor.nextToken();
