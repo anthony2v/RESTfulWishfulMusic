@@ -1,5 +1,6 @@
 package com.spicecrispies;
 
+
 public class RestClient implements Client {
     public RestClient() {
 
