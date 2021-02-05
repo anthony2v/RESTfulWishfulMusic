@@ -8,7 +8,14 @@ public class Album {
     private int year;
     private Artist artist;
 
-    public Album(){}
+    public Album(String isrc, String title, String description, int year, Artist artist) {
+        this.isrc = isrc;
+        this.title = title;
+        this.description = description;
+        this.year = year;
+        this.artist = artist;
+
+    }
 
     public void setIsrc(String isrc) {
         this.isrc = isrc;
@@ -50,4 +57,16 @@ public class Album {
         return artist;
     }
 
+
+    public String toString(){
+        String description = this.description;
+        if ((description == null) || description.isEmpty())
+        {
+            description = "No description at ths moment";
+        }
+        return String.format("ISRC: %s, title: %s, description: %s, release year: %d, artist: %s", isrc, title,
+                description, year, artist);
+    }
+
 }
+

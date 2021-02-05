@@ -1,18 +1,17 @@
 package com.spicecrispies.Repo_Base;
 
 
-
-import java.util.List;
+import java.util.ArrayList;
 
 public interface AlbumRepo {
 
-    List<Album> readAll();
+    ArrayList<Album> listAlbum();
 
-    Album read(String isrc);
+    Album getAlbum(String isrc);
 
-    void add(Album a);
+    void  addAlbum(Album album);
 
-    void update(Album a);
+    void updateAlbum(Album album);
 
-    void delete(String isrc);
+    void deleteAlbum(String isrc);
 }

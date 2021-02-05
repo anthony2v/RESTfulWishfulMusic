@@ -6,7 +6,12 @@ public class Artist {
     private String lastname;
     private String bio;
 
-    public Artist(){}
+    public Artist(String nickname, String firstname, String lastname, String bio) {
+        this.nickname = nickname;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.bio = bio;
+    }
 
     public void setNickname(String nickname) { this.nickname = nickname;}
 
@@ -38,5 +43,8 @@ public class Artist {
         return bio;
     }
 
-
+    public String toString(){
+        return String.format("Nickname: %s, first name: %s, last name: %s, bio: %s", nickname, firstname, lastname, bio);
+    }
 }
+

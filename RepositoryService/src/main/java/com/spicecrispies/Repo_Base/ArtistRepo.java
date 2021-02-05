@@ -1,18 +1,20 @@
 package com.spicecrispies.Repo_Base;
 
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 public interface ArtistRepo {
 
-    List<Artist> readAll();
+    ArrayList<Artist> listArtist();
 
-    Artist read(String nickname);
+    Artist getArtist(String nickname);
 
-    void add(Artist a);
+    void addArtist(Artist artist);
 
-    void update(Artist a);
+    void updateArtist(Artist artist);
 
-    void delete(String nickname);
+    void deleteArtist(String nickname);
+
 
 }
