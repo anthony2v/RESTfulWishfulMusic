@@ -62,7 +62,7 @@ public class AlbumImplementation implements AlbumInterface {
     }
 
     @Override
-    public boolean deleteAlbum(String isrc, String title, String description, int releaseYear) {
+    public boolean deleteAlbum(String isrc) {
 
         int index = -1;
         for(

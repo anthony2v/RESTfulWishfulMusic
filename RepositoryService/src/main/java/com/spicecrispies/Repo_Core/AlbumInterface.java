@@ -11,6 +11,6 @@ public interface AlbumInterface {
     String getAlbumDetails(String isrc);
     boolean addAlbum(String isrc, String title, String description, int releaseYear);
     boolean updateAlbum(String isrc, String title, String description, int releaseYear, Artist artist);
-    boolean deleteAlbum(String isrc, String title, String description, int releaseYear);
+    boolean deleteAlbum(String isrc);
 
 }
