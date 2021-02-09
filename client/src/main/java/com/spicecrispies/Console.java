@@ -66,15 +66,22 @@ public class Console {
         try {
             switch (command) {
                 case ("listAlbums"):
-                    System.out.println(albumClient.listAlbums());
+                    System.out.print(albumClient.listAlbums());
                     break;
                 case ("getAlbumDetails"):
-                    System.out.println("getAlbumDetails called");
+                    System.out.print("getAlbumDetails called");
                     break;
                 case ("addAlbum"):
-                    System.out.println(albumClient.addAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
+                    System.out.print(albumClient.addAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
                             commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
                             commandProcessor.nextToken()));
+                    break;
+                case ("updateAlbum"):
+                    System.out.print(albumClient.updateAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
+                            commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
+                            commandProcessor.nextToken()));
+                    break;
+                case ("deleteAlbum"):
                     break;
                 default:
                     System.out.println("Command not recognized. Please try again.");

@@ -41,33 +41,17 @@ public class AlbumREST {
     }
 
     @PUT
-    @Path("{isrc}")
-    @Consumes("application/xml")
+    @Path("{isrc}/{title}/{description}/{releaseYear}/{artist}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String updateAlbum(@PathParam("isrc") String isrc, Album album) {
-//        try {
-            return albumImplementation.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist());
-//                return "Album with isrc " + isrc +": UPDATED";
-//            } else {
-//                return "Album with isrc " + isrc +": FAILED TO UPDATE";
-//            }
-//        } catch(Exception e) {
-//            return "ERROR IN UPDATING";
-//        }
+    public String updateAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description")  String description
+            , @PathParam("releaseYear") int releaseYear, @PathParam("artist") String artist) {
+        return albumImplementation.updateAlbum(isrc, title, description, releaseYear, artist);
     }
 
     @DELETE
     @Path("{isrc}")
     @Produces(MediaType.TEXT_PLAIN)
     public String deleteAlbum(@PathParam("isrc") String isrc) {
-//        try {
-            return albumImplementation.deleteAlbum(isrc);
-//                return "Album with isrc " + isrc +": DELETED";
-//            } else {
-//                return "Album with isrc " + isrc +": FAILED TO DELETE";
-//            }
-//        } catch(Exception e) {
-//            return "ERROR IN DELETION";
-//        }
+        return albumImplementation.deleteAlbum(isrc);
     }
 }

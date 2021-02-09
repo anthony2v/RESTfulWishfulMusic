@@ -5,6 +5,7 @@ import com.spicecrispies.interfaces.AlbumInterface;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
@@ -59,7 +60,15 @@ public class RestClient implements AlbumInterface {
 
     @Override
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s",
+                    isrc, title, description, releaseYear, artist));
+            CloseableHttpResponse httpResponse = client.execute(httpPut);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to update customer";
+        }
     }
 
     @Override

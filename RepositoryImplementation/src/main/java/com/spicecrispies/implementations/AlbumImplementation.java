@@ -113,7 +113,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return "" + flag;
         }
+        return "" + flag;
     }
 }
