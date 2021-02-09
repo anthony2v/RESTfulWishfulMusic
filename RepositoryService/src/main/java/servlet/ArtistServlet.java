@@ -34,16 +34,16 @@ public class ArtistServlet extends HttpServlet {
             }
             else
             {
-                if(artistInterface.addArtist(nickname,firstName,lastName,biography)) {
-                    System.out.println("Artist ADDED");
-                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-
-                }
-                else
-                {   //Artist not found
-                    System.out.println("Artist NOT ADDED");
-                    httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                }
+//                if(artistInterface.addArtist(nickname,firstName,lastName,biography)) {
+//                    System.out.println("Artist ADDED");
+//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
+//
+//                }
+//                else
+//                {   //Artist not found
+//                    System.out.println("Artist NOT ADDED");
+//                    httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                }
 
             }
 
@@ -117,16 +117,16 @@ public class ArtistServlet extends HttpServlet {
 
         try{
 
-            if(!artistInterface.updateArtist(nickname,firstName,lastName,biography))
-            {
-                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                System.out.println("Artist: NOT UPDATED. TRY AGARIN!!");
-            }
-            else
-            {
-                httpResponse.setStatus(HttpServletResponse.SC_OK);
-                System.out.println("Artist: UPDATED!!");
-            }
+//            if(!artistInterface.updateArtist(nickname,firstName,lastName,biography))
+//            {
+//                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                System.out.println("Artist: NOT UPDATED. TRY AGARIN!!");
+//            }
+//            else
+//            {
+//                httpResponse.setStatus(HttpServletResponse.SC_OK);
+//                System.out.println("Artist: UPDATED!!");
+//            }
             System.out.println();
         }
         catch(Exception e) {
@@ -145,16 +145,16 @@ public class ArtistServlet extends HttpServlet {
 
         try{
 
-            if(!artistInterface.deleteArtist(nickname))
-            {
-                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                System.out.println("Artist: NOT DELETED. TRY AGARIN!!");
-            }
-            else
-            {
-                httpResponse.setStatus(HttpServletResponse.SC_OK);
-                System.out.println("Artist: DELETED!!");
-            }
+//            if(!artistInterface.deleteArtist(nickname))
+//            {
+//                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                System.out.println("Artist: NOT DELETED. TRY AGARIN!!");
+//            }
+//            else
+//            {
+//                httpResponse.setStatus(HttpServletResponse.SC_OK);
+//                System.out.println("Artist: DELETED!!");
+//            }
             System.out.println();
         }
         catch(Exception e) {

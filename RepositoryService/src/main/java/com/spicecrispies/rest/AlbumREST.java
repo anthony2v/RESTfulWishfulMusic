@@ -21,12 +21,11 @@ public class AlbumREST {
     public String getAlbum(@PathParam("isrc") String isrc) {
         try {
             String album = albumImplementation.getAlbumDetails(isrc);
-            if (album == null) { // No such album
+            if (album.equals("")) { // No such album
                 return "No album with an ISRC of " + isrc;
             }
             return "Album details:" + album;
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return "An error occurred while trying to get the album";
         }
     }

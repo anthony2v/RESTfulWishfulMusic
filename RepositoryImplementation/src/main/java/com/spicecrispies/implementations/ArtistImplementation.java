@@ -3,11 +3,13 @@ package com.spicecrispies.implementations;
 import com.spicecrispies.entities.Artist;
 import com.spicecrispies.interfaces.ArtistInterface;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class ArtistImplementation implements ArtistInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
-    private final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
+    private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
+    private static final ArrayList<Artist> artists = new ArrayList<>();
 
     @Override
     public String listArtists() {

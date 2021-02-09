@@ -11,8 +11,8 @@ import java.util.StringTokenizer;
  */
 
 public class Console {
-    private static WebClient artistClient = new WebClient();
-    private static RestClient albumClient = new RestClient();
+    private static final WebClient artistClient = new WebClient();
+    private static final RestClient albumClient = new RestClient();
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -50,8 +50,8 @@ public class Console {
         System.out.println("deleteArtist [Nickname]");
         System.out.println("listAlbums");
         System.out.println("getAlbumInfo [ISRC]");
-        System.out.println("addAlbum [ISRC] [Title] [Artist Nickname] [Year] [Description]");
-        System.out.println("updateAlbumInfo [ISRC] [Title] [Artist Nickname] [Year] [Description]");
+        System.out.println("addAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
+        System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
         System.out.println("deleteAlbum [ISRC]");
         System.out.println("quit");
     }
@@ -68,7 +68,7 @@ public class Console {
                 case ("listAlbums"):
                     System.out.print(albumClient.listAlbums());
                     break;
-                case ("getAlbumDetails"):
+                case ("getAlbumInfo"):
                     System.out.print(albumClient.getAlbumDetails(commandProcessor.nextToken()));
                     break;
                 case ("addAlbum"):

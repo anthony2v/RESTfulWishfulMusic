@@ -22,6 +22,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             return str.toString();
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
+            str.append("Error listing albums.");
         } finally {
             sema.release();
         }
@@ -36,8 +37,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
                     return album.toString();
                 }
             }
-            return "";
-        }catch(Exception e) {
+        } catch(Exception e) {
             System.out.println("Exception caught :" + e);
         }
         return "";
@@ -51,13 +51,14 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             sema.acquire();
             if (getAlbumDetails(isrc).equalsIgnoreCase("")) {
                 albums.add(new Album(isrc, title, description, releaseYear, artist));
-                response += "Album with isrc " + isrc +": ADDED";
+                response = "Album with ISRC " + isrc +" added successfully.";
+            } else {
+                response = "Album with ISRC " + isrc +" already in system.";
             }
-            else
-                response += "Album already added.";
-        }catch(Exception e){
-            response += "Exception caught :" + e;
-        }finally{
+        } catch(Exception e) {
+            System.out.println("Exception caught :" + e);
+            response = "Error adding album.";
+        } finally {
             sema.release();
         }
         return response;
@@ -65,54 +66,46 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
     @Override
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
-        boolean flag = false;
+        String response = "Album not updated. Verify that it has been added.";
         try {
             sema.acquire();
-
             for (Album album : albums) {
                 if (album.getIsrc().equalsIgnoreCase(isrc)) {
                     album.setTitle(title);
                     album.setDescription(description);
                     album.setReleaseYear(releaseYear);
                     album.setArtist(artist);
-                    flag=true;
-                    return "" + flag;
+                    response = "Album updated successfully";
+                    break;
                 }
             }
-            flag=false;
-            return ""+ flag;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
+            response = "Error updating album.";
         } finally {
             sema.release();
-            return "" + flag;
         }
+        return response;
     }
 
     @Override
     public String deleteAlbum(String isrc) {
-        boolean flag = false;
+        String response = "Failed deleting album. Please check ISRC.";
         try {
             sema.acquire();
-            int index = -1;
-            for (Album album : albums) {
-                if (album.getIsrc().equalsIgnoreCase(isrc)) {
-                    index = albums.indexOf(album);
+            for (int i = 1; i < albums.size(); i++) {
+                if (albums.get(i).getIsrc().equalsIgnoreCase(isrc)) {
+                    albums.remove(i);
+                    response = "Album deleted successfully.";
+                    break;
                 }
             }
-
-            if (index != -1) {
-                albums.remove(index);
-                flag=true;
-                return "" + flag;
-            }
-            flag=false;
-            return "" + flag;
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Exception caught :" + e);
+            response = "Error deleting album.";
         } finally {
             sema.release();
         }
-        return "" + flag;
+        return response;
     }
 }
