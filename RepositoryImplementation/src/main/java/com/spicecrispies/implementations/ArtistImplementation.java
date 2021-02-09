@@ -48,23 +48,23 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
     }
 
     @Override
-    public boolean addArtist(String nickName, String firstName, String lastName, String autoBiography) {
+    public String addArtist(String nickName, String firstName, String lastName, String autoBiography) {
         try {
             sema.acquire();
             if (getArtistDetails(nickName).equalsIgnoreCase("")) {
                 artists.add(new Artist(nickName, firstName, lastName, autoBiography));
             }
-            return true;
+            return "" + true;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return true;
+            return "" + true;
         }
     }
 
     @Override
-    public boolean updateArtist(String nickName, String firstName, String lastName, String biography) {
+    public String updateArtist(String nickName, String firstName, String lastName, String biography) {
         boolean flag = false;
         try {
             sema.acquire();
@@ -75,22 +75,22 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
                     artist.setLastName(lastName);
                     artist.setBiography(biography);
                     flag = true;
-                    return flag;
+                    return "" + flag;
                 }
             }
 
             flag = false;
-            return flag;
+            return "" + flag;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return flag;
+            return "" + flag;
         }
     }
 
     @Override
-    public boolean deleteArtist(String nickName) {
+    public String deleteArtist(String nickName) {
         boolean flag = false;
         try {
             sema.acquire();
@@ -104,15 +104,15 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
             if (index != -1) {
                 artists.remove(index);
                 flag = true;
-                return flag;
+                return "" + flag;
             }
             flag = false;
-            return flag;
+            return "" + flag;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return flag;
+            return "" + flag;
         }
     }
 }

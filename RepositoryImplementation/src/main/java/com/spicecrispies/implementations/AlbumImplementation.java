@@ -13,22 +13,19 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
     @Override
     public String listAlbums() {
-
         StringBuilder str = new StringBuilder();
         try {
             sema.acquire();
             for (Album album : albums) {
-                str.append(album.toString() + "\n");
+                str.append(album.toString()).append("\n");
             }
-
             return str.toString();
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
-
             sema.release();
-            return str.toString();
         }
+        return str.toString();
     }
 
     @Override
@@ -48,24 +45,26 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
 
     @Override
-    public boolean addAlbum(String isrc, String title, String description, int releaseYear, String artist){
+    public String addAlbum(String isrc, String title, String description, int releaseYear, String artist){
+        String response = "";
         try {
             sema.acquire();
             if (getAlbumDetails(isrc).equalsIgnoreCase("")) {
-                //add album (adds a new album to the collection; no artist details) thats why i put null
                 albums.add(new Album(isrc, title, description, releaseYear, artist));
+                response += "Album with isrc " + isrc +": ADDED";
             }
-            return true;
+            else
+                response += "Album already added.";
         }catch(Exception e){
-            System.out.println("Exception caught :" + e);
+            response += "Exception caught :" + e;
         }finally{
             sema.release();
         }
-        return false;
+        return response;
     }
 
     @Override
-    public boolean updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         boolean flag = false;
         try {
             sema.acquire();
@@ -77,21 +76,21 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
                     album.setReleaseYear(releaseYear);
                     album.setArtist(artist);
                     flag=true;
-                    return flag;
+                    return "" + flag;
                 }
             }
             flag=false;
-            return flag;
+            return ""+ flag;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return flag;
+            return "" + flag;
         }
     }
 
     @Override
-    public boolean deleteAlbum(String isrc) {
+    public String deleteAlbum(String isrc) {
         boolean flag = false;
         try {
             sema.acquire();
@@ -106,15 +105,15 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             if (index != -1) {
                 albums.remove(index);
                 flag=true;
-                return flag;
+                return "" + flag;
             }
             flag=false;
-            return flag;
+            return "" + flag;
         }catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return flag;
+            return "" + flag;
         }
     }
 }

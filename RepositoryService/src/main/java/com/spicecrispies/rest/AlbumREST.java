@@ -33,18 +33,11 @@ public class AlbumREST {
     }
 
     @POST
-    @Consumes("application/xml")
+    @Path("{isrc}/{title}/{description}/{releaseYear}/{artist}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String addAlbum(Album album) {
-        try {
-            if (albumImplementation.addAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
-                return "Album with isrc " + album.getIsrc() +": ADDED";
-            } else {
-                return "Album with isrc " + album.getIsrc() +": FAILED TO ADD";
-            }
-        } catch(Exception e) {
-            return "ERROR IN ADDING";
-        }
+    public String addAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description")  String description
+            , @PathParam("releaseYear") int releaseYear, @PathParam("artist") String artist) {
+        return albumImplementation.addAlbum(isrc, title, description, releaseYear, artist);
     }
 
     @PUT
@@ -52,29 +45,29 @@ public class AlbumREST {
     @Consumes("application/xml")
     @Produces(MediaType.TEXT_PLAIN)
     public String updateAlbum(@PathParam("isrc") String isrc, Album album) {
-        try {
-            if (albumImplementation.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
-                return "Album with isrc " + isrc +": UPDATED";
-            } else {
-                return "Album with isrc " + isrc +": FAILED TO UPDATE";
-            }
-        } catch(Exception e) {
-            return "ERROR IN UPDATING";
-        }
+//        try {
+            return albumImplementation.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist());
+//                return "Album with isrc " + isrc +": UPDATED";
+//            } else {
+//                return "Album with isrc " + isrc +": FAILED TO UPDATE";
+//            }
+//        } catch(Exception e) {
+//            return "ERROR IN UPDATING";
+//        }
     }
 
     @DELETE
     @Path("{isrc}")
     @Produces(MediaType.TEXT_PLAIN)
     public String deleteAlbum(@PathParam("isrc") String isrc) {
-        try {
-            if (albumImplementation.deleteAlbum(isrc)) {
-                return "Album with isrc " + isrc +": DELETED";
-            } else {
-                return "Album with isrc " + isrc +": FAILED TO DELETE";
-            }
-        } catch(Exception e) {
-            return "ERROR IN DELETION";
-        }
+//        try {
+            return albumImplementation.deleteAlbum(isrc);
+//                return "Album with isrc " + isrc +": DELETED";
+//            } else {
+//                return "Album with isrc " + isrc +": FAILED TO DELETE";
+//            }
+//        } catch(Exception e) {
+//            return "ERROR IN DELETION";
+//        }
     }
 }

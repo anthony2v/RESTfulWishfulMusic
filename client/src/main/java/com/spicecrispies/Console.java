@@ -11,6 +11,9 @@ import java.util.StringTokenizer;
  */
 
 public class Console {
+    private static WebClient artistClient = new WebClient();
+    private static RestClient albumClient = new RestClient();
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         String userCommand = "";
@@ -62,11 +65,16 @@ public class Console {
         String command = commandProcessor.nextToken();
         try {
             switch (command) {
-                case ("listArtists"):
-                    System.out.println("listArtists called");
+                case ("listAlbums"):
+                    System.out.println(albumClient.listAlbums());
                     break;
-                case ("getArtistDetails"):
-                    System.out.println("getArtistDetails called");
+                case ("getAlbumDetails"):
+                    System.out.println("getAlbumDetails called");
+                    break;
+                case ("addAlbum"):
+                    System.out.println(albumClient.addAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
+                            commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
+                            commandProcessor.nextToken()));
                     break;
                 default:
                     System.out.println("Command not recognized. Please try again.");

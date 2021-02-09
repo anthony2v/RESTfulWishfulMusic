@@ -1,69 +1,42 @@
 package com.spicecrispies;
 
 
+import com.spicecrispies.interfaces.AlbumInterface;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-
 import java.io.IOException;
+import java.util.Scanner;
 
-public class RestClient implements Client {
+public class RestClient implements AlbumInterface {
     public RestClient() {
 
-    }
-
-    public String listArtists() {
-        return null;
-    }
-
-    /**
-     * Returns the full artist information including bio.
-     * @return full artist information
-     */
-    public String getArtistDetails() {
-        return null;
-    }
-
-    public String addAlbum(String isrc, String title, String description, int releaseYear, String artist) {
-        String response = null;
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s",
-                    isrc, title, description, releaseYear, artist));
-            CloseableHttpResponse httpResponse = client.execute(httpPost);
-            response = httpResponse.toString();
-            httpResponse.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
-    public String updateArtist() {
-        return null;
-    }
-
-    /**
-     * Delete the artist's record
-     * @return status of the deletion
-     */
-    public String deleteArtist() {
-        return null;
     }
 
     /**
      * Shows the list of albums by sorted by ISRC and title
      * @return list of albums
      */
+    @Override
     public String listAlbums() {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet("http://localhost:8080/RESTfulMusic/album");
+            CloseableHttpResponse httpResponse = client.execute(httpGet);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to get album list";
+        }
     }
 
     /**
      * Returns the full album information by ISRC
      * @return full album info
      */
-    public String getAlbumDetails() {
+    @Override
+    public String getAlbumDetails(String isrc) {
         return null;
     }
 
@@ -71,15 +44,44 @@ public class RestClient implements Client {
      * Adds a new album to the collection with no artist details
      * @return status of the addition
      */
-    public String addAlbum() {
+    @Override
+    public String addAlbum(String isrc, String title, String description, int releaseYear, String artist) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s",
+                    isrc, title, description, releaseYear, artist));
+            CloseableHttpResponse httpResponse = client.execute(httpPost);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to add customer";
+        }
+    }
+
+    @Override
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         return null;
     }
 
-    public String updateAlbumInfo() {
+    @Override
+    public String deleteAlbum(String isrc) {
         return null;
     }
 
-    public String deleteAlbum() {
-        return null;
+    /**
+     * Reads the response and converts it into a string
+     * @param response response from http request
+     * @return string of the response
+     * @throws IOException
+     */
+    public static String readResponse(CloseableHttpResponse response) throws IOException {
+        // Handling the IO Stream from the response using scanner
+        Scanner sc = new Scanner(response.getEntity().getContent());
+        StringBuilder stringResponse = new StringBuilder();
+        while (sc.hasNext()) {
+            stringResponse.append(sc.nextLine());
+            stringResponse.append("\n");
+        }
+        response.close();
+        return stringResponse.toString();
     }
 }
