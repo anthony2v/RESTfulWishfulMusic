@@ -1,8 +1,12 @@
 package com.spicecrispies;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
+import java.io.IOException;
 
 /**
  * This WebClient class is used to perform API calls to the Artists service, which is implemented using servlet
@@ -10,10 +14,8 @@ import org.apache.http.impl.client.HttpClients;
  */
 
 public class WebClient implements Client {
-    String URI;
 
-    public WebClient(String URI) {
-        this.URI = URI;
+    public WebClient() {
     }
 
     public String listArtists() {
@@ -31,7 +33,17 @@ public class WebClient implements Client {
     }
 
     public String addArtist() {
-        return null;
+        String response = null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s",
+                    isrc, title, description, releaseYear, artist));
+            CloseableHttpResponse httpResponse = client.execute(httpPost);
+            response = httpResponse.toString();
+            httpResponse.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     public String updateArtist() {

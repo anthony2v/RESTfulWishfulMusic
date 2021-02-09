@@ -1,6 +1,13 @@
 package com.spicecrispies;
 
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import java.io.IOException;
+
 public class RestClient implements Client {
     public RestClient() {
 
@@ -18,8 +25,18 @@ public class RestClient implements Client {
         return null;
     }
 
-    public String addArtist() {
-        return null;
+    public String addAlbum(String isrc, String title, String description, int releaseYear, String artist) {
+        String response = null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s",
+                    isrc, title, description, releaseYear, artist));
+            CloseableHttpResponse httpResponse = client.execute(httpPost);
+            response = httpResponse.toString();
+            httpResponse.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     public String updateArtist() {
