@@ -2,10 +2,7 @@ package com.spicecrispies;
 
 
 import com.spicecrispies.interfaces.AlbumInterface;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
@@ -38,11 +35,18 @@ public class RestClient implements AlbumInterface {
      */
     @Override
     public String getAlbumDetails(String isrc) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
+            CloseableHttpResponse httpResponse = client.execute(httpGet);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to get album details";
+        }
     }
 
     /**
-     * Adds a new album to the collection with no artist details
+     * Adds a new album to the collection
      * @return status of the addition
      */
     @Override
@@ -73,7 +77,14 @@ public class RestClient implements AlbumInterface {
 
     @Override
     public String deleteAlbum(String isrc) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpDelete httpDelete = new HttpDelete(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
+            CloseableHttpResponse httpResponse = client.execute(httpDelete);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to delete customer";
+        }
     }
 
     /**

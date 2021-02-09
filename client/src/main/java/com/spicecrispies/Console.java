@@ -69,7 +69,7 @@ public class Console {
                     System.out.print(albumClient.listAlbums());
                     break;
                 case ("getAlbumDetails"):
-                    System.out.print("getAlbumDetails called");
+                    System.out.print(albumClient.getAlbumDetails(commandProcessor.nextToken()));
                     break;
                 case ("addAlbum"):
                     System.out.print(albumClient.addAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
@@ -82,6 +82,7 @@ public class Console {
                             commandProcessor.nextToken()));
                     break;
                 case ("deleteAlbum"):
+                    System.out.print(albumClient.deleteAlbum(commandProcessor.nextToken()));
                     break;
                 default:
                     System.out.println("Command not recognized. Please try again.");
