@@ -8,7 +8,7 @@ public interface ArtistInterface {
     List <Artist> artists = new ArrayList<>();
     String listArtists();
     String getArtistDetails(String nickName);
-    boolean addArtist(String nickName, String firstName, String lastName, String autoBiography);
-    boolean updateArtist(String nickName, String firstName, String lastName, String autoBiography);
-    boolean deleteArtist(String nickName);
+    String addArtist(String nickName, String firstName, String lastName, String autoBiography);
+    String updateArtist(String nickName, String firstName, String lastName, String autoBiography);
+    String deleteArtist(String nickName);
 }
