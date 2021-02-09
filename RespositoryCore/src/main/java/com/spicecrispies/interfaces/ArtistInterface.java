@@ -1,5 +1,7 @@
-package com.spicecrispies;
+package com.spicecrispies.interfaces;
 
+
+import com.spicecrispies.entities.Artist;
 
 import java.util.ArrayList;
 import java.util.List;

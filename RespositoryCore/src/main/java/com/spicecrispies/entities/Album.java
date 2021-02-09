@@ -1,4 +1,4 @@
-package com.spicecrispies;
+package com.spicecrispies.entities;
 
 public class Album {
 

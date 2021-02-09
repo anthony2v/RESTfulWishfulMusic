@@ -1,4 +1,4 @@
-package com.spicecrispies;
+package com.spicecrispies.entities;
 
 public class Artist {
     String nickname;
@@ -41,7 +41,7 @@ public class Artist {
         return biography;
     }
 
-    public void setbiography(String biography) {
+    public void setBiography(String biography) {
         this.biography = biography;
     }
 
