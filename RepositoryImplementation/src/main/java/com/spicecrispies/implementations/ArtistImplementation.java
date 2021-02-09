@@ -1,4 +1,7 @@
-package com.spicecrispies;
+package com.spicecrispies.implementations;
+
+import com.spicecrispies.entities.Artist;
+import com.spicecrispies.interfaces.ArtistInterface;
 
 public class ArtistImplementation implements ArtistInterface {
     @Override
@@ -45,7 +48,7 @@ public class ArtistImplementation implements ArtistInterface {
             {
                 artist.setFirstName(firstName);
                 artist.setLastName(lastName);
-                artist.setbiography(biography);
+                artist.setBiography(biography);
 
                 return true;
             }

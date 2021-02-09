@@ -1,4 +1,7 @@
-package com.spicecrispies;
+package com.spicecrispies.implementations;
+
+import com.spicecrispies.entities.Album;
+import com.spicecrispies.interfaces.AlbumInterface;
 
 public class AlbumImplementation implements AlbumInterface {
     @Override

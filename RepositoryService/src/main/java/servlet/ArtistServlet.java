@@ -1,7 +1,7 @@
 package servlet;
 
 import com.spicecrispies.RepoBusiness.ArtistFactory;
-import com.spicecrispies.ArtistInterface;
+import com.spicecrispies.interfaces.ArtistInterface;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

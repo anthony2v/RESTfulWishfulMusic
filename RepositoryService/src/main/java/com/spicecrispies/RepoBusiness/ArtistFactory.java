@@ -1,6 +1,6 @@
 package com.spicecrispies.RepoBusiness;
 
-import com.spicecrispies.ArtistInterface;
+import com.spicecrispies.interfaces.ArtistInterface;
 import com.spicecrispies.ArtistImplementation;
 
 public class ArtistFactory {
