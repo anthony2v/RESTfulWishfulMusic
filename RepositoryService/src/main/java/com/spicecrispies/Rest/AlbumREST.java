@@ -1,8 +1,8 @@
 package com.spicecrispies.Rest;
 
 import com.spicecrispies.RepoBusiness.AlbumFactory;
-import com.spicecrispies.Album;
-import com.spicecrispies.AlbumInterface;
+import com.spicecrispies.entities.Album;
+import com.spicecrispies.interfaces.AlbumInterface;
 
 
 import javax.ws.rs.*;

@@ -1,7 +1,7 @@
 package com.spicecrispies.RepoBusiness;
 
 import com.spicecrispies.interfaces.ArtistInterface;
-import com.spicecrispies.ArtistImplementation;
+import com.spicecrispies.implementations.ArtistImplementation;
 
 public class ArtistFactory {
 
