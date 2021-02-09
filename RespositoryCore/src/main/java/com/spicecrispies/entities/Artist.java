@@ -1,20 +1,9 @@
 package com.spicecrispies.entities;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name="artist")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Artist {
-    @XmlElement
     String nickname;
-    @XmlElement
     String firstName;
-    @XmlElement
     String lastName;
-    @XmlElement
     String biography;
 
     public Artist(String nickname, String firstName, String lastName, String biography) {

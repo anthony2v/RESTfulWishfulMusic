@@ -1,6 +1,5 @@
 package com.spicecrispies;
 
-
 import com.spicecrispies.interfaces.AlbumInterface;
 import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -9,10 +8,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class RestClient implements AlbumInterface {
-    public RestClient() {
-
-    }
-
     /**
      * Shows the list of albums by sorted by ISRC and title
      * @return list of albums
@@ -88,10 +83,10 @@ public class RestClient implements AlbumInterface {
     }
 
     /**
-     * Reads the response and converts it into a string
-     * @param response response from http request
-     * @return string of the response
-     * @throws IOException
+     * Converts the given response into a string
+     * @param response http response
+     * @return response string
+     * @throws IOException thrown by close method
      */
     public static String readResponse(CloseableHttpResponse response) throws IOException {
         // Handling the IO Stream from the response using scanner

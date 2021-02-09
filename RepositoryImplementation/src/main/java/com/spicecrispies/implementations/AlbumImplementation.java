@@ -95,8 +95,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
         try {
             sema.acquire();
             int index = -1;
-            for (
-                    Album album : albums) {
+            for (Album album : albums) {
                 if (album.getIsrc().equalsIgnoreCase(isrc)) {
                     index = albums.indexOf(album);
                 }

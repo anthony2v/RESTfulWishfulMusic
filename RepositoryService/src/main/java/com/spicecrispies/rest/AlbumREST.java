@@ -1,7 +1,6 @@
 package com.spicecrispies.rest;
 
 import com.spicecrispies.repobusiness.AlbumFactory;
-import com.spicecrispies.entities.Album;
 import com.spicecrispies.interfaces.AlbumInterface;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

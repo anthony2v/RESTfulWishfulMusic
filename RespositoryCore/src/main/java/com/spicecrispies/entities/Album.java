@@ -1,22 +1,10 @@
 package com.spicecrispies.entities;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name="album")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Album {
-    @XmlElement
     private String isrc;
-    @XmlElement
     private String title;
-    @XmlElement
     private String description;
-    @XmlElement
     private int releaseYear;
-    @XmlElement
     private String artist;
 
     public Album(String isrc, String title, String description, int releaseYear, String artist) {
