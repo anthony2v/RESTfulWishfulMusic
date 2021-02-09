@@ -1,6 +1,7 @@
-package com.spicecrispies.Repo_Business;
-import com.spicecrispies.Repo_Core.AlbumInterface;
-import com.spicecrispies.Repo_Implementation.AlbumImplementation;
+package com.spicecrispies.RepoBusiness;
+
+import com.spicecrispies.AlbumInterface;
+import com.spicecrispies.AlbumImplementation;
 
 public class AlbumFactory {
 

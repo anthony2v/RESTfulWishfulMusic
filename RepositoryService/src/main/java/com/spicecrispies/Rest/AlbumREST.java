@@ -1,17 +1,13 @@
 package com.spicecrispies.Rest;
 
-import com.spicecrispies.Repo_Business.AlbumFactory;
-import com.spicecrispies.Repo_Core.Album;
-import com.spicecrispies.Repo_Core.AlbumInterface;
-import com.spicecrispies.Repo_Core.Artist;
-import com.spicecrispies.Repo_Business.ArtistFactory;
-import com.spicecrispies.Repo_Implementation.AlbumImplementation;
+import com.spicecrispies.RepoBusiness.AlbumFactory;
+import com.spicecrispies.Album;
+import com.spicecrispies.AlbumInterface;
 
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 
 @Path("album")
