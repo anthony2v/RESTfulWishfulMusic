@@ -34,17 +34,14 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     @Override
     public String getAlbumDetails(String s) {
         try {
-            sema.acquire();
             for (Album album : albums) {
                 if (album.getIsrc().equalsIgnoreCase(s)) {
                     return album.toString();
                 }
             }
             return "";
-        }catch(Exception e){
+        }catch(Exception e) {
             System.out.println("Exception caught :" + e);
-        }finally{
-            sema.release();
         }
         return "";
     }

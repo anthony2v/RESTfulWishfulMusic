@@ -66,20 +66,15 @@ public class AlbumREST {
 
 
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String updateAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("description")  String description
-            , @FormParam("releaseYear") int releaseYear) {
+    @Consumes("application/xml")
+    public String updateAlbum(Album album) {
         try {
-
-            if (albumImplementation.updateAlbum(isrc, title, description, releaseYear, null)){
-                return "Album with isrc " + isrc +": UPDATED";
+            if (albumImplementation.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
+                return "Album with isrc " + album.getIsrc() +": UPDATED";
+            } else {
+                return "Album with isrc " + album.getIsrc() +": FAILED TO UPDATE";
             }
-            else {
-                return "Album with isrc " + isrc +": FAILED TO UPDATE";
-            }
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return "ERROR IN UPDATING";
         }
     }
