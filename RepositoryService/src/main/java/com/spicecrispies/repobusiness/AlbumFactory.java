@@ -1,4 +1,4 @@
-package com.spicecrispies.RepoBusiness;
+package com.spicecrispies.repobusiness;
 
 import com.spicecrispies.interfaces.AlbumInterface;
 import com.spicecrispies.implementations.AlbumImplementation;

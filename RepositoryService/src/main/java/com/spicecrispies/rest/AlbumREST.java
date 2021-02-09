@@ -1,6 +1,6 @@
-package com.spicecrispies.Rest;
+package com.spicecrispies.rest;
 
-import com.spicecrispies.RepoBusiness.AlbumFactory;
+import com.spicecrispies.repobusiness.AlbumFactory;
 import com.spicecrispies.entities.Album;
 import com.spicecrispies.interfaces.AlbumInterface;
 

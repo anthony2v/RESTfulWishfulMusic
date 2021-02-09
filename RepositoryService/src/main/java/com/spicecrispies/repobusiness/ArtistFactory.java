@@ -1,4 +1,4 @@
-package com.spicecrispies.RepoBusiness;
+package com.spicecrispies.repobusiness;
 
 import com.spicecrispies.interfaces.ArtistInterface;
 import com.spicecrispies.implementations.ArtistImplementation;
