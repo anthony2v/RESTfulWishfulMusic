@@ -6,9 +6,9 @@ public class Album {
     private String title;
     private String description;
     private int releaseYear;
-    private Artist artist;
+    private String artist;
 
-    public Album(String isrc, String title, String description, int releaseYear, Artist artist) {
+    public Album(String isrc, String title, String description, int releaseYear, String artist) {
         this.isrc = isrc;
         this.title = title;
         this.description = description;
@@ -45,11 +45,11 @@ public class Album {
         this.releaseYear = releaseYear;
     }
 
-    public Artist getArtist() {
+    public String getArtist() {
         return artist;
     }
 
-    public void setArtist(Artist artist) {
+    public void setArtist(String artist) {
         this.artist = artist;
     }
 

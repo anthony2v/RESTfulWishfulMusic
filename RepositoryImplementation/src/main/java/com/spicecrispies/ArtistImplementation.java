@@ -1,7 +1,6 @@
-import entities.Artist;
-import interfaces.Respository;
+package com.spicecrispies;
 
-public class RepositoryImplementation  implements Respository {
+public class ArtistImplementation implements ArtistInterface {
     @Override
     public String listArtists() {
 
@@ -19,7 +18,7 @@ public class RepositoryImplementation  implements Respository {
 
         for(Artist artist: artists)
         {
-            if(artist.getNickName().equalsIgnoreCase(s))
+            if(artist.getNickname().equalsIgnoreCase(s))
             {
                 return artist.toString();
             }
@@ -38,15 +37,15 @@ public class RepositoryImplementation  implements Respository {
     }
 
     @Override
-    public boolean updateArtist(String nickName, String firstName, String lastName, String autoBiography) {
+    public boolean updateArtist(String nickName, String firstName, String lastName, String biography) {
 
         for(Artist artist: artists)
         {
-            if(artist.getNickName().equalsIgnoreCase(nickName))
+            if(artist.getNickname().equalsIgnoreCase(nickName))
             {
                 artist.setFirstName(firstName);
                 artist.setLastName(lastName);
-                artist.setAutoBiography(autoBiography);
+                artist.setbiography(biography);
 
                 return true;
             }
@@ -61,9 +60,9 @@ public class RepositoryImplementation  implements Respository {
         int index = -1;
         for(Artist artist: artists)
         {
-            if(artist.getNickName().equalsIgnoreCase(nickName))
+            if(artist.getNickname().equalsIgnoreCase(nickName))
             {
-               index = artists.indexOf(artist);
+                index = artists.indexOf(artist);
             }
         }
 

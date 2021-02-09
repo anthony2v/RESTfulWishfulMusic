@@ -1,9 +1,4 @@
-package com.spicecrispies.Repo_Implementation;
-
-import com.spicecrispies.Repo_Core.Album;
-import com.spicecrispies.Repo_Core.AlbumInterface;
-import com.spicecrispies.Repo_Core.Artist;
-import com.spicecrispies.Repo_Implementation.ArtistImplementation;
+package com.spicecrispies;
 
 public class AlbumImplementation implements AlbumInterface {
     @Override
@@ -44,7 +39,7 @@ public class AlbumImplementation implements AlbumInterface {
     }
 
     @Override
-    public boolean updateAlbum(String isrc, String title, String description, int releaseYear, Artist artist) {
+    public boolean updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         for(Album album: albums)
         {
             if(album.getIsrc().equalsIgnoreCase(isrc))
