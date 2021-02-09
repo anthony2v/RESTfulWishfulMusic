@@ -1,4 +1,4 @@
-package com.spicecrispies.Repo_Core;
+package com.spicecrispies;
 
 
 import java.util.ArrayList;
