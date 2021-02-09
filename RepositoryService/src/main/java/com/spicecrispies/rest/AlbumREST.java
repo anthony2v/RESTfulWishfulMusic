@@ -13,18 +13,16 @@ import java.util.ArrayList;
 @Path("album")
 public class AlbumREST {
 
-    private static ArrayList<Album> albums = new ArrayList<>();
-
-    private AlbumInterface albumImplementation = AlbumFactory.getInstance();
+    private static final AlbumInterface albumImplementation = AlbumFactory.getInstance();
 
 
     @GET
+    @Path("{isrc}/{title}")
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("{isrc}")
     public String listAlbum(@PathParam("isrc") String isrc) {
-        if (albums.size() == 0) // No albums
+        if (albumImplementation.albums.size() == 0) // No albums
             return "There are no albums";
-        Album album= albums.stream().filter(album1 -> album1.getIsrc() == isrc).findFirst().orElse(null);
+        Album album= albumImplementation.albums.stream().filter(album1 -> album1.getIsrc() == isrc).findFirst().orElse(null);
         if (album != null) {
             return album.toString();
         } else {
@@ -33,15 +31,15 @@ public class AlbumREST {
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("{isrc}")
+    @Produces(MediaType.TEXT_PLAIN)
     public String getAlbum(@PathParam("isrc") String isrc) {
         try {
             String album = albumImplementation.getAlbumDetails(isrc);
             if (album == null) { // No such album
                 return "No album with an ISRC of " + isrc;
             }
-            return album.toString();
+            return "Album details:" + album;
         }
         catch(Exception e) {
             return "An error occurred while trying to get the album";
@@ -51,17 +49,14 @@ public class AlbumREST {
 
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String addAlbum(@FormParam("isrc") String isrc, @FormParam("title") String title, @FormParam("description")  String description
-            , @FormParam("releaseYear") int releaseYear) {
+    @Consumes("application/xml")
+    public String addAlbum(Album album) {
         try {
-
-            if (albumImplementation.updateAlbum(isrc, title, description, releaseYear, null)){
-                return "Album with isrc " + isrc +": ADDED";
+            if (albumImplementation.addAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
+                return "Album with isrc " + album.getIsrc() +": ADDED";
             }
             else {
-                return "Album with isrc " + isrc +": FAILED TO ADD";
+                return "Album with isrc " + album.getIsrc() +": FAILED TO ADD";
             }
         }
         catch(Exception e) {

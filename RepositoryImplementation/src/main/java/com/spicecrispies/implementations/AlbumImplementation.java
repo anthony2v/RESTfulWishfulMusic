@@ -3,11 +3,14 @@ package com.spicecrispies.implementations;
 import com.spicecrispies.entities.Album;
 import com.spicecrispies.interfaces.AlbumInterface;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class AlbumImplementation implements AlbumInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
-    private final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
+    private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
+    private static final ArrayList<Album> albums = new ArrayList<>();
+
     @Override
     public String listAlbums() {
 
@@ -37,32 +40,31 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
                     return album.toString();
                 }
             }
-
             return "";
         }catch(Exception e){
             System.out.println("Exception caught :" + e);
         }finally{
             sema.release();
-            return "";
         }
+        return "";
     }
 
 
     @Override
-    public boolean addAlbum(String isrc, String title, String description, int releaseYear){
+    public boolean addAlbum(String isrc, String title, String description, int releaseYear, String artist){
         try {
             sema.acquire();
             if (getAlbumDetails(isrc).equalsIgnoreCase("")) {
                 //add album (adds a new album to the collection; no artist details) thats why i put null
-                albums.add(new Album(isrc, title, description, releaseYear, null));
+                albums.add(new Album(isrc, title, description, releaseYear, artist));
             }
             return true;
         }catch(Exception e){
             System.out.println("Exception caught :" + e);
         }finally{
             sema.release();
-            return true;
         }
+        return false;
     }
 
     @Override
