@@ -1,11 +1,22 @@
 package com.spicecrispies.entities;
 
-public class Album {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="album")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Album {
+    @XmlElement
     private String isrc;
+    @XmlElement
     private String title;
+    @XmlElement
     private String description;
+    @XmlElement
     private int releaseYear;
+    @XmlElement
     private String artist;
 
     public Album(String isrc, String title, String description, int releaseYear, String artist) {
@@ -14,7 +25,19 @@ public class Album {
         this.description = description;
         this.releaseYear = releaseYear;
         this.artist = artist;
+    }
 
+    // Copy constructor
+    public Album(Album album) {
+        this.isrc = album.getIsrc();
+        this.title = album.getTitle();
+        this.description = album.getDescription();
+        this.releaseYear = album.getReleaseYear();
+        this.artist = album.getArtist();
+    }
+
+    // Default constructor for code injection
+    public Album() {
     }
 
     public String getIsrc() {
