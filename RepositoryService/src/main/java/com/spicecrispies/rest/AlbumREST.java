@@ -3,31 +3,17 @@ package com.spicecrispies.rest;
 import com.spicecrispies.repobusiness.AlbumFactory;
 import com.spicecrispies.entities.Album;
 import com.spicecrispies.interfaces.AlbumInterface;
-
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-
 
 @Path("album")
 public class AlbumREST {
-
     private static final AlbumInterface albumImplementation = AlbumFactory.getInstance();
 
-
     @GET
-    @Path("{isrc}/{title}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String listAlbum(@PathParam("isrc") String isrc) {
-        if (albumImplementation.albums.size() == 0) // No albums
-            return "There are no albums";
-        Album album= albumImplementation.albums.stream().filter(album1 -> album1.getIsrc() == isrc).findFirst().orElse(null);
-        if (album != null) {
-            return album.toString();
-        } else {
-            return "Album not found!";
-        }
+    public String listAlbum() {
+        return albumImplementation.listAlbums();
     }
 
     @GET
@@ -43,58 +29,52 @@ public class AlbumREST {
         }
         catch(Exception e) {
             return "An error occurred while trying to get the album";
-
         }
     }
 
-
     @POST
     @Consumes("application/xml")
+    @Produces(MediaType.TEXT_PLAIN)
     public String addAlbum(Album album) {
         try {
             if (albumImplementation.addAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
                 return "Album with isrc " + album.getIsrc() +": ADDED";
-            }
-            else {
+            } else {
                 return "Album with isrc " + album.getIsrc() +": FAILED TO ADD";
             }
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return "ERROR IN ADDING";
         }
     }
 
-
     @PUT
+    @Path("{isrc}")
     @Consumes("application/xml")
-    public String updateAlbum(Album album) {
+    @Produces(MediaType.TEXT_PLAIN)
+    public String updateAlbum(@PathParam("isrc") String isrc, Album album) {
         try {
             if (albumImplementation.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtist())){
-                return "Album with isrc " + album.getIsrc() +": UPDATED";
+                return "Album with isrc " + isrc +": UPDATED";
             } else {
-                return "Album with isrc " + album.getIsrc() +": FAILED TO UPDATE";
+                return "Album with isrc " + isrc +": FAILED TO UPDATE";
             }
         } catch(Exception e) {
             return "ERROR IN UPDATING";
         }
     }
 
-
     @DELETE
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("{isrc}")
+    @Produces(MediaType.TEXT_PLAIN)
     public String deleteAlbum(@PathParam("isrc") String isrc) {
         try {
-
             if (albumImplementation.deleteAlbum(isrc)) {
                 return "Album with isrc " + isrc +": DELETED";
             } else {
                 return "Album with isrc " + isrc +": FAILED TO DELETE";
             }
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return "ERROR IN DELETION";
         }
     }
 }
-
