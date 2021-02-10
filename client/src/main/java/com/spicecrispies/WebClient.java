@@ -1,10 +1,7 @@
 package com.spicecrispies;
 
 import com.spicecrispies.interfaces.ArtistInterface;
-import org.apache.http.HttpRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -22,7 +19,7 @@ public class WebClient implements ArtistInterface {
 
     public String listArtists() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet("http://localhost:8080/ArtistServlet");
+            HttpGet httpGet = new HttpGet("http://localhost:8081/ArtistServlet");
             CloseableHttpResponse httpResponse = client.execute(httpGet);
             return readResponse(httpResponse);
         } catch (IOException e) {
@@ -36,13 +33,21 @@ public class WebClient implements ArtistInterface {
      * @return full artist information
      */
     public String getArtistDetails(String nickName) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(String.format("http://localhost:8081/ArtistServlet?nickname=%s", nickName));
+            CloseableHttpResponse httpResponse = client.execute(httpGet);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error occurred when getting artist info.";
     }
 
     public String addArtist(String nickName, String firstName, String lastName, String autoBiography) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/ArtistServlet?nickname=%s&firstname=%s&lastname=%s&bio=%s", nickName, firstName, lastName, autoBiography));
-            CloseableHttpResponse httpResponse = client.execute(httpPut);
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8081/ArtistServlet?nickname=%s&firstname=%s&lastname=%s&bio=%s",
+                    nickName, firstName, lastName, autoBiography));
+            CloseableHttpResponse httpResponse = client.execute(httpPost);
             return readResponse(httpResponse);
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +56,15 @@ public class WebClient implements ArtistInterface {
     }
 
     public String updateArtist(String nickName, String firstName, String lastName, String autoBiography) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPut httpPut = new HttpPut(String.format("http://localhost:8081/ArtistServlet?nickname=%s&firstname=%s&lastname=%s&bio=%s",
+                    nickName, firstName, lastName, autoBiography));
+            CloseableHttpResponse httpResponse = client.execute(httpPut);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error occurred when updating artist.";
     }
 
     /**
@@ -59,7 +72,14 @@ public class WebClient implements ArtistInterface {
      * @return status of the deletion
      */
     public String deleteArtist(String nickName) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpDelete httpDelete = new HttpDelete(String.format("http://localhost:8081/ArtistServlet?nickname=%s", nickName));
+            CloseableHttpResponse httpResponse = client.execute(httpDelete);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error occurred when deleting artist.";
     }
 
     /**

@@ -68,9 +68,19 @@ public class Console {
                 case ("listArtists"):
                     System.out.print(artistClient.listArtists());
                     break;
+                case ("getArtistDetails"):
+                    System.out.print(artistClient.getArtistDetails(commandProcessor.nextToken()));
+                    break;
                 case ("addArtist"):
                     System.out.print(artistClient.addArtist(commandProcessor.nextToken(), commandProcessor.nextToken(),
                             commandProcessor.nextToken(), commandProcessor.nextToken()));
+                    break;
+                case ("updateArtist"):
+                    System.out.print(artistClient.updateArtist(commandProcessor.nextToken(), commandProcessor.nextToken(),
+                            commandProcessor.nextToken(), commandProcessor.nextToken()));
+                    break;
+                case ("deleteArtist"):
+                    System.out.print(artistClient.deleteArtist(commandProcessor.nextToken()));
                     break;
                 case ("listAlbums"):
                     System.out.print(albumClient.listAlbums());

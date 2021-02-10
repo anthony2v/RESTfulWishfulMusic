@@ -11,170 +11,90 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "artist")
 public class ArtistServlet extends HttpServlet {
-    private final ArtistInterface artistInterface = ArtistFactory.getInstance();
+    private static final ArtistInterface artistInterface = ArtistFactory.getInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
         String nickname = request.getParameter("nickname");
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String biography = request.getParameter("bio");
-
         if(biography == null)
-        {
             biography = "No biography at this moment";
-        }
-
+        // Set response content type
+        response.setContentType("text/plain");
+        PrintWriter output = response.getWriter();
         try{
-            if(nickname== null && firstName == null && lastName == null) {
-                System.out.println("Artist ERROR");
-                httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            if (nickname == null || firstName == null || lastName == null) {
+                output.println("Missing parameters.");
+                ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
-            else
-            {
-//                if(artistInterface.addArtist(nickname,firstName,lastName,biography)) {
-//                    System.out.println("Artist ADDED");
-//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-//
-//                }
-//                else
-//                {   //Artist not found
-//                    System.out.println("Artist NOT ADDED");
-//                    httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                }
-
+            else {
+               output.println(artistInterface.addArtist(nickname, firstName, lastName, biography));
+               ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
             }
-
         }
         catch(Exception e) {
             System.out.println("INTERNAL SERVER ERROR WHILE ADDING THE ARTIST");
-            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nickname = request.getParameter("nickname");
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        // Set refresh, autoload time as 5 seconds
-        response.setHeader("Testing", "Testing1");
-
         // Set response content type
         response.setContentType("text/plain");
         PrintWriter output = response.getWriter();
-        output.println("Hello, World\n");
-
-//        try{
-//            if(nickname == null)
-//            {
-//                String artists = artistInterface.listArtists();
-//                String s ="";
-//
-//                if (!artists.contains(s))
-//                {
-//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-//                    String artistList = artistInterface.getArtistDetails(nickname);
-//                    System.out.println(artistList);
-//                }
-//                else
-//                {
-//                    httpResponse.setStatus(HttpServletResponse.SC_CONTINUE);
-//                    System.out.println("NO ARTIST");
-//                }
-//                System.out.println();
-//            }
-//            else
-//            {
-//                String artist = artistInterface.getArtistDetails(nickname);
-//                if (artist !=null) { //artist nickame found
-//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-//                    System.out.println("Artist's nickame found!!");
-//                    System.out.println(artist.toString());
-//                }
-//                else
-//                {   //No artist with that nickname
-//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-//                    System.out.println("No artist with " + nickname +" as nickname");
-//                }
-//            }
-//
-//            System.out.println();
-//
-//        }
-//        catch(Exception e) {
-//            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//            System.out.println("ERROR during the fetch of the list of albums");
-//            System.out.println();
-//        }
+        try {
+            if(nickname == null) {
+                output.println(artistInterface.listArtists());
+            } else {
+                String artist = artistInterface.getArtistDetails(nickname);
+                if (artist.equals(""))
+                    output.println("No artist named " + nickname +" found.");
+                else
+                    output.println(artist);
+            }
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
+        } catch(Exception e) {
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            output.println("ERROR during the fetch of the list of albums");
+        }
     }
 
     //NOT SURE
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String nickname = request.getParameter("nickname");
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String biography = request.getParameter("bio");
-
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        // Set refresh, autoload time as 5 seconds
-        response.setHeader("Testing", "Testing1");
-
         // Set response content type
         response.setContentType("text/plain");
         PrintWriter output = response.getWriter();
-        output.println("Hello, Link\n");
-
         try{
-
-//            if(!artistInterface.updateArtist(nickname,firstName,lastName,biography))
-//            {
-//                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                System.out.println("Artist: NOT UPDATED. TRY AGARIN!!");
-//            }
-//            else
-//            {
-//                httpResponse.setStatus(HttpServletResponse.SC_OK);
-//                System.out.println("Artist: UPDATED!!");
-//            }
-            System.out.println();
-        }
-        catch(Exception e) {
-            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            output.println(artistInterface.updateArtist(nickname,firstName,lastName,biography));
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
+        } catch(Exception e) {
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             System.out.println("INTERNAL SERVER ERROR WHILE UPDATING THE ARTIST");
-            System.out.println();
         }
     }
 
 
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String nickname = request.getParameter("nickname");
-
+        // Set response content type
+        response.setContentType("text/plain");
+        PrintWriter output = response.getWriter();
         try{
-
-//            if(!artistInterface.deleteArtist(nickname))
-//            {
-//                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                System.out.println("Artist: NOT DELETED. TRY AGARIN!!");
-//            }
-//            else
-//            {
-//                httpResponse.setStatus(HttpServletResponse.SC_OK);
-//                System.out.println("Artist: DELETED!!");
-//            }
-            System.out.println();
+            output.println(artistInterface.deleteArtist(nickname));
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
         }
         catch(Exception e) {
-            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            System.out.println("INTERNAL SERVER ERROR WHILE DELETING THE ARTIST");
-            System.out.println();
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            output.println("INTERNAL SERVER ERROR WHILE DELETING THE ARTIST");
         }
     }
 

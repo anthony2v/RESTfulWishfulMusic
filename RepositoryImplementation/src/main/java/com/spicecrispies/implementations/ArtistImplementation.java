@@ -26,25 +26,22 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
         } finally {
 
             sema.release();
-            return str.toString();
+
         }
+        return str.toString();
     }
 
     @Override
     public String getArtistDetails(String s) {
         try {
-            sema.acquire();
             for (Artist artist : artists) {
                 if (artist.getNickname().equalsIgnoreCase(s)) {
                     return artist.toString();
                 }
             }
-
             return "";
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
-        } finally {
-            sema.release();
             return "";
         }
     }
@@ -55,14 +52,14 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
             sema.acquire();
             if (getArtistDetails(nickName).equalsIgnoreCase("")) {
                 artists.add(new Artist(nickName, firstName, lastName, autoBiography));
+                return "Artist added successfully";
             }
-            return "" + true;
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return "" + true;
         }
+        return "Error adding artist";
     }
 
     @Override
@@ -114,7 +111,8 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
             System.out.println("Exception caught :" + e);
         } finally {
             sema.release();
-            return "" + flag;
+
         }
+        return "" + flag;
     }
 }
