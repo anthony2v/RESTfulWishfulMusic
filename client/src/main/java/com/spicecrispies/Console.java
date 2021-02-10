@@ -49,7 +49,7 @@ public class Console {
         System.out.println("updateArtist [Nickname] [First Name] [Last Name] [Bio]");
         System.out.println("deleteArtist [Nickname]");
         System.out.println("listAlbums");
-        System.out.println("getAlbumInfo [ISRC]");
+        System.out.println("getAlbumDetails [ISRC]");
         System.out.println("addAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
         System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
         System.out.println("deleteAlbum [ISRC]");
@@ -85,7 +85,7 @@ public class Console {
                 case ("listAlbums"):
                     System.out.print(albumClient.listAlbums());
                     break;
-                case ("getAlbumInfo"):
+                case ("getAlbumDetails"):
                     System.out.print(albumClient.getAlbumDetails(commandProcessor.nextToken()));
                     break;
                 case ("addAlbum"):

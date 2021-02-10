@@ -40,7 +40,7 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
             artists.add(new Artist(nickName, firstName, lastName, autoBiography));
             response = "Artist added successfully";
         } else {
-        response = "Artist named " + nickName +" already in the system.";
+            response = "Artist named " + nickName +" already in the system.";
         }
         sema.release();
         return response;
