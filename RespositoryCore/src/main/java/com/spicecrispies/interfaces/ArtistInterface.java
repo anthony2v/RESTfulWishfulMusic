@@ -1,9 +1,9 @@
 package com.spicecrispies.interfaces;
 
 public interface ArtistInterface {
-    String listArtists();
-    String getArtistDetails(String nickName);
-    String addArtist(String nickName, String firstName, String lastName, String autoBiography);
-    String updateArtist(String nickName, String firstName, String lastName, String autoBiography);
-    String deleteArtist(String nickName);
+    String listArtists() throws Exception;
+    String getArtistDetails(String nickName) throws Exception;
+    String addArtist(String nickName, String firstName, String lastName, String autoBiography) throws Exception;
+    String updateArtist(String nickName, String firstName, String lastName, String autoBiography) throws Exception;
+    String deleteArtist(String nickName) throws Exception;
 }

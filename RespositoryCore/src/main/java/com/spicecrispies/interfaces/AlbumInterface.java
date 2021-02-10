@@ -1,9 +1,9 @@
 package com.spicecrispies.interfaces;
 
 public interface AlbumInterface {
-    String listAlbums();
-    String getAlbumDetails(String isrc);
-    String addAlbum(String isrc, String title, String description, int releaseYear, String artist);
-    String updateAlbum(String isrc, String title, String description, int releaseYear, String artist);
-    String deleteAlbum(String isrc);
+    String listAlbums() throws Exception;
+    String getAlbumDetails(String isrc) throws Exception;
+    String addAlbum(String isrc, String title, String description, int releaseYear, String artist) throws Exception;
+    String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) throws Exception;
+    String deleteAlbum(String isrc) throws Exception;
 }

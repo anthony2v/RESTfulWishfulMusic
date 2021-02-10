@@ -1,8 +1,10 @@
 package com.spicecrispies;
 
 import com.spicecrispies.interfaces.ArtistInterface;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -20,7 +22,6 @@ public class WebClient implements ArtistInterface {
 
     public String listArtists() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet("http://localhost:8080/ArtistServlet");
             CloseableHttpResponse httpResponse = client.execute(httpGet);
             return readResponse(httpResponse);
@@ -39,7 +40,14 @@ public class WebClient implements ArtistInterface {
     }
 
     public String addArtist(String nickName, String firstName, String lastName, String autoBiography) {
-        return null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/ArtistServlet?nickname=%s&firstname=%s&lastname=%s&bio=%s", nickName, firstName, lastName, autoBiography));
+            CloseableHttpResponse httpResponse = client.execute(httpPut);
+            return readResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error occurred when adding artist.";
     }
 
     public String updateArtist(String nickName, String firstName, String lastName, String autoBiography) {

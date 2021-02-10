@@ -114,13 +114,20 @@ public class ArtistServlet extends HttpServlet {
     //NOT SURE
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String nickname = request.getParameter("nickname");
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String biography = request.getParameter("bio");
 
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        // Set refresh, autoload time as 5 seconds
+        response.setHeader("Testing", "Testing1");
+
+        // Set response content type
+        response.setContentType("text/plain");
+        PrintWriter output = response.getWriter();
+        output.println("Hello, Link\n");
 
         try{
 
