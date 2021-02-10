@@ -7,6 +7,7 @@
           <element id="module-output" name="RepositoryService" />
         </element>
       </element>
+      <element id="artifact" artifact-name="RepositoryService:war exploded" />
     </root>
   </artifact>
 </component>

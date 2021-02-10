@@ -65,6 +65,9 @@ public class Console {
         String command = commandProcessor.nextToken();
         try {
             switch (command) {
+                case ("listArtists"):
+                    System.out.print(artistClient.listArtists());
+                    break;
                 case ("listAlbums"):
                     System.out.print(albumClient.listAlbums());
                     break;

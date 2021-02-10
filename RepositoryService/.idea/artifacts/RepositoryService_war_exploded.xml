@@ -7,6 +7,10 @@
         <element id="directory" name="classes">
           <element id="module-output" name="RepositoryService" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.spicecrispies:RepositoryCore:1.0-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: com.spicecrispies:RepositoryImplementation:1.0-SNAPSHOT" />
+        </element>
       </element>
     </root>
   </artifact>

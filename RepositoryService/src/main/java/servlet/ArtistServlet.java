@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(name = "artist")
 public class ArtistServlet extends HttpServlet {
-
-    private ArtistInterface artistInterface = ArtistFactory.getInstance();
+    private final ArtistInterface artistInterface = ArtistFactory.getInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -57,51 +57,58 @@ public class ArtistServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String nickname = request.getParameter("nickname");
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        // Set refresh, autoload time as 5 seconds
+        response.setHeader("Testing", "Testing1");
 
-        try{
-            if(nickname == null)
-            {
-                String artists = artistInterface.listArtists();
-                String s ="";
+        // Set response content type
+        response.setContentType("text/plain");
+        PrintWriter output = response.getWriter();
+        output.println("Hello, World\n");
 
-                if (!artists.contains(s))
-                {
-                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-                    String artistList = artistInterface.getArtistDetails(nickname);
-                    System.out.println(artistList);
-                }
-                else
-                {
-                    httpResponse.setStatus(HttpServletResponse.SC_CONTINUE);
-                    System.out.println("NO ARTIST");
-                }
-                System.out.println();
-            }
-            else
-            {
-                String artist = artistInterface.getArtistDetails(nickname);
-                if (artist !=null) { //artist nickame found
-                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-                    System.out.println("Artist's nickame found!!");
-                    System.out.println(artist.toString());
-                }
-                else
-                {   //No artist with that nickname
-                    httpResponse.setStatus(HttpServletResponse.SC_OK);
-                    System.out.println("No artist with " + nickname +" as nickname");
-                }
-            }
-
-            System.out.println();
-        }
-        catch(Exception e) {
-            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            System.out.println("ERROR during the fetch of the list of albums");
-            System.out.println();
-        }
+//        try{
+//            if(nickname == null)
+//            {
+//                String artists = artistInterface.listArtists();
+//                String s ="";
+//
+//                if (!artists.contains(s))
+//                {
+//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
+//                    String artistList = artistInterface.getArtistDetails(nickname);
+//                    System.out.println(artistList);
+//                }
+//                else
+//                {
+//                    httpResponse.setStatus(HttpServletResponse.SC_CONTINUE);
+//                    System.out.println("NO ARTIST");
+//                }
+//                System.out.println();
+//            }
+//            else
+//            {
+//                String artist = artistInterface.getArtistDetails(nickname);
+//                if (artist !=null) { //artist nickame found
+//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
+//                    System.out.println("Artist's nickame found!!");
+//                    System.out.println(artist.toString());
+//                }
+//                else
+//                {   //No artist with that nickname
+//                    httpResponse.setStatus(HttpServletResponse.SC_OK);
+//                    System.out.println("No artist with " + nickname +" as nickname");
+//                }
+//            }
+//
+//            System.out.println();
+//
+//        }
+//        catch(Exception e) {
+//            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//            System.out.println("ERROR during the fetch of the list of albums");
+//            System.out.println();
+//        }
     }
 
     //NOT SURE
