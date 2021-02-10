@@ -69,7 +69,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     public String deleteAlbum(String isrc) throws Exception {
         String response = "Failed deleting album. Please check ISRC.";
         sema.acquire();
-        for (int i = 1; i < albums.size(); i++) {
+        for (int i = 0; i < albums.size(); i++) {
             if (albums.get(i).getIsrc().equalsIgnoreCase(isrc)) {
                 albums.remove(i);
                 response = "Album deleted successfully.";
