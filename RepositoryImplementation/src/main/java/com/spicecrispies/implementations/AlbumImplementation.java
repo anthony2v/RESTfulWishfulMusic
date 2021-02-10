@@ -41,7 +41,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             albums.add(new Album(isrc, title, description, releaseYear, artist));
             response = "Album with ISRC " + isrc +" added successfully.";
         } else {
-            response = "Album with ISRC " + isrc +" already in system.";
+            response = "Album with ISRC " + isrc +" already in the system.";
         }
         sema.release();
         return response;

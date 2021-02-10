@@ -12,107 +12,69 @@ public class ArtistImplementation implements ArtistInterface, Serializable {
     private static final ArrayList<Artist> artists = new ArrayList<>();
 
     @Override
-    public String listArtists() {
+    public String listArtists() throws Exception {
         StringBuilder str = new StringBuilder();
-        try {
-            sema.acquire();
-            for (Artist artist : artists) {
-                str.append(artist.toString() + "\n");
-            }
-
-            return str.toString();
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-        } finally {
-
-            sema.release();
-
+        sema.acquire();
+        for (Artist artist : artists) {
+            str.append(artist.toString()).append("\n");
         }
+        sema.release();
         return str.toString();
     }
 
     @Override
     public String getArtistDetails(String s) {
-        try {
-            for (Artist artist : artists) {
-                if (artist.getNickname().equalsIgnoreCase(s)) {
-                    return artist.toString();
-                }
+        for (Artist artist : artists) {
+            if (artist.getNickname().equalsIgnoreCase(s)) {
+                return artist.toString();
             }
-            return "";
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-            return "";
         }
+        return "";
     }
 
     @Override
-    public String addArtist(String nickName, String firstName, String lastName, String autoBiography) {
-        try {
-            sema.acquire();
-            if (getArtistDetails(nickName).equalsIgnoreCase("")) {
-                artists.add(new Artist(nickName, firstName, lastName, autoBiography));
-                return "Artist added successfully";
-            }
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-        } finally {
-            sema.release();
+    public String addArtist(String nickName, String firstName, String lastName, String autoBiography) throws Exception {
+        String response = "";
+        sema.acquire();
+        if (getArtistDetails(nickName).equalsIgnoreCase("")) {
+            artists.add(new Artist(nickName, firstName, lastName, autoBiography));
+            response = "Artist added successfully";
+        } else {
+        response = "Artist named " + nickName +" already in the system.";
         }
-        return "Error adding artist";
+        sema.release();
+        return response;
     }
 
     @Override
-    public String updateArtist(String nickName, String firstName, String lastName, String biography) {
-        boolean flag = false;
-        try {
-            sema.acquire();
-
-            for (Artist artist : artists) {
-                if (artist.getNickname().equalsIgnoreCase(nickName)) {
-                    artist.setFirstName(firstName);
-                    artist.setLastName(lastName);
-                    artist.setBiography(biography);
-                    flag = true;
-                    return "" + flag;
-                }
+    public String updateArtist(String nickName, String firstName, String lastName, String biography) throws Exception {
+        String response = "Artist not updated. Verify that it has been added.";
+        sema.acquire();
+        for (Artist artist : artists) {
+            if (artist.getNickname().equalsIgnoreCase(nickName)) {
+                artist.setFirstName(firstName);
+                artist.setLastName(lastName);
+                artist.setBiography(biography);
+                response = "Artist updated successfully.";
+                break;
             }
-
-            flag = false;
-            return "" + flag;
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-        } finally {
-            sema.release();
-            return "" + flag;
         }
+        sema.release();
+        return response;
     }
 
     @Override
-    public String deleteArtist(String nickName) {
-        boolean flag = false;
-        try {
-            sema.acquire();
-            int index = -1;
-            for (Artist artist : artists) {
-                if (artist.getNickname().equalsIgnoreCase(nickName)) {
-                    index = artists.indexOf(artist);
-                }
+    public String deleteArtist(String nickName) throws Exception {
+        String response = "Failed deleting artist. Please check nickname.";
+        sema.acquire();
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists.get(i).getNickname().equalsIgnoreCase(nickName)) {
+                artists.remove(i);
+                response = "Artist deleted successfully.";
+                break;
             }
-
-            if (index != -1) {
-                artists.remove(index);
-                flag = true;
-                return "" + flag;
-            }
-            flag = false;
-            return "" + flag;
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-        } finally {
-            sema.release();
-
         }
-        return "" + flag;
+        sema.release();
+        return response;
     }
 }
