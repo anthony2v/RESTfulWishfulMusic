@@ -23,11 +23,6 @@
 hs_err_pid*
 
 # out and target folders from each project
-RespositoryCore/out
-RespositoryCore/target
-RepositoryImplementation/out
-RepositoryImplementation/target
-RepositoryService/out
-RepositoryService/target
-client/out
-client/target
+out
+target
+lib
