@@ -1,6 +1,5 @@
 package com.spicecrispies.interfaces;
 
-//TODO: Not used in this assignment?
 public interface ArtistInterface {
     String listArtists() throws Exception;
     String getArtistDetails(String nickName) throws Exception;
