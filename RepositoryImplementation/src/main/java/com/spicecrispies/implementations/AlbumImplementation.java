@@ -1,74 +1,67 @@
 package com.spicecrispies.implementations;
 
 import com.spicecrispies.entities.Album;
+import com.spicecrispies.entities.AlbumCover;
+import com.spicecrispies.enums.ChangeType;
+import com.spicecrispies.exceptions.RepException;
 import com.spicecrispies.interfaces.AlbumInterface;
+import com.spicecrispies.logging.LogEntry;
+
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class AlbumImplementation implements AlbumInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
     private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
+    //TODO: This will be stored in the database through data layer
     private static final ArrayList<Album> albums = new ArrayList<>();
-
-    @Override
-    public String listAlbums() throws Exception {
-        StringBuilder str = new StringBuilder();
-        sema.acquire();
-        for (Album album : albums) {
-            str.append(album.toString()).append("\n");
-        }
-        sema.release();
-        return str.toString();
-    }
-
-    @Override
-    public String getAlbumDetails(String s) {
-        for (Album album : albums) {
-            if (album.getIsrc().equalsIgnoreCase(s)) {
-                return album.toString();
-            }
-        }
-        return "";
-    }
+    private static final ArrayList<LogEntry> logs = new ArrayList<>();
 
 
     @Override
-    public String addAlbum(String isrc, String title, String description, int releaseYear, String artist) throws Exception {
+    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         String response = "";
-        sema.acquire();
-        if (getAlbumDetails(isrc).equalsIgnoreCase("")) {
-            albums.add(new Album(isrc, title, description, releaseYear, artist));
+
+        getLock();
+
+        if (getAlbumInfo(isrc).equalsIgnoreCase("")) {
+            albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
             response = "Album with ISRC " + isrc +" added successfully.";
         } else {
             response = "Album with ISRC " + isrc +" already in the system.";
         }
-        sema.release();
+        releaseLock();
+        addLogEntry(isrc, ChangeType.CREATE);
         return response;
     }
 
     @Override
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) throws Exception {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         String response = "Album not updated. Verify that it has been added.";
-        sema.acquire();
+        getLock();
         for (Album album : albums) {
             if (album.getIsrc().equalsIgnoreCase(isrc)) {
                 album.setTitle(title);
                 album.setDescription(description);
                 album.setReleaseYear(releaseYear);
-                album.setArtist(artist);
+                album.setArtistFirstName(artistFirstName);
+                album.setArtistLastName(artistLastName);
+                album.setAlbumCover(albumCover);
                 response = "Album updated successfully";
                 break;
             }
         }
-        sema.release();
+        releaseLock();
+        addLogEntry(isrc, ChangeType.UPDATE);
         return response;
     }
 
     @Override
-    public String deleteAlbum(String isrc) throws Exception {
+    public String deleteAlbum(String isrc) throws RepException {
         String response = "Failed deleting album. Please check ISRC.";
-        sema.acquire();
+        getLock();
         for (int i = 0; i < albums.size(); i++) {
             if (albums.get(i).getIsrc().equalsIgnoreCase(isrc)) {
                 albums.remove(i);
@@ -76,7 +69,71 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
                 break;
             }
         }
-        sema.release();
+        releaseLock();
+        addLogEntry(isrc, ChangeType.DELETE);
         return response;
+    }
+
+    @Override
+    public String getAlbumInfo(String isrc) throws RepException {
+        for (Album album : albums) {
+            if (album.getIsrc().equalsIgnoreCase(isrc)) {
+                return album.toString();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public String listAlbums() throws RepException {
+        StringBuilder str = new StringBuilder();
+        getLock();
+        for (Album album : albums) {
+            str.append(album.toString()).append("\n");
+        }
+        releaseLock();
+        return str.toString();
+    }
+
+    @Override
+    public String updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
+        return null;
+    }
+
+    @Override
+    public String deleteAlbumCoverImage(String isrc) throws RepException {
+        return null;
+    }
+
+    @Override
+    public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
+        return null;
+    }
+
+    @Override
+    public String getChangeLogs(Timestamp fromDate, Timestamp toDate, ChangeType changeType) throws RepException {
+        return null;
+    }
+
+    @Override
+    public void clearLogs() throws RepException {
+    throw new RepException("Method not to be implemented in this assignment.");
+    }
+
+
+    private void getLock() throws RepException{
+        try {
+            sema.acquire();
+        } catch (InterruptedException ex) {
+            throw new RepException("InterruptedException raised: \r\n" + ex.toString());
+        }
+    }
+
+    private void releaseLock(){
+        sema.release();
+    }
+
+    private void addLogEntry(String recordKey, ChangeType changeType){
+        logs.add(new LogEntry(new Timestamp(System.currentTimeMillis()), changeType, recordKey));
     }
 }
