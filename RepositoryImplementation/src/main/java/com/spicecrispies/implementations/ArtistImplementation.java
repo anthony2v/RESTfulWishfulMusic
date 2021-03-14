@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-//TODO: Not being used in assignment 02
 public class ArtistImplementation implements ArtistInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
     private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);

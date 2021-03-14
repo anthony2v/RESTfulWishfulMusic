@@ -17,9 +17,7 @@
           <root url="jar://$MODULE_DIR$/../RespositoryCore/out/artifacts/RepositoryCore_jar/RepositoryCore.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../RespositoryCore/out/artifacts/RepositoryCore_jar/RepositoryCore.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: com.spicecrispies:RepositoryCore:1.0-SNAPSHOT" level="project" />
