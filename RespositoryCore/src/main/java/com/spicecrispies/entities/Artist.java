@@ -1,5 +1,6 @@
 package com.spicecrispies.entities;
 
+//TODO: Not used in this assignment?
 public class Artist {
     String nickname;
     String firstName;
