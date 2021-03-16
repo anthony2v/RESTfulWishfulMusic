@@ -9,7 +9,7 @@ CREATE TABLE album (
     year YEAR NOT NULL,
     artist_first_name VARCHAR(255) NOT NULL,
     artist_last_name VARCHAR(255) NOT NULL,
-    cover_image LONGBLOB NOT NULL,
+    cover_image LONGBLOB,
     cover_image_type VARCHAR(255) NOT NULL,
     PRIMARY KEY (isrc)
 );

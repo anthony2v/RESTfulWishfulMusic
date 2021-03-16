@@ -42,20 +42,17 @@ public class AlbumRESTJSON implements AlbumInterface {
 
             if (album.equals("")) { // No such album
                 return "No album with an ISRC of " + isrc;
-            }
-            else
-            {
+            } else {
 
             }
 
             Album album = albumManager.getAlbum(isrc);
             return album;
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Exception caught :" + e.getMessage());
             return "Error getting album.";
         }
     }
-
 
 
     //TODO: Update end point to upload image so it can be stored in AlbumCover
@@ -64,7 +61,7 @@ public class AlbumRESTJSON implements AlbumInterface {
     @Path("{isrc}/{title}/{description}/{releaseYear}/{artistFirstName}/{artistLastName}/{albumCover}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String addAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description")  String description
+    public String addAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description") String description
             , @PathParam("releaseYear") int releaseYear, @PathParam("artistFirstName") String artistFirstName, @PathParam("artistLastName") String artistLastName, @PathParam("albumCover") String albumCover) {
         try {
 
@@ -77,8 +74,8 @@ public class AlbumRESTJSON implements AlbumInterface {
 //            }
 
             //logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
-            return albumImplementation.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null,null));
-        } catch(Exception e) {
+            return albumImplementation.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null, null));
+        } catch (Exception e) {
             System.out.println("Exception caught :" + e);
             return "Error adding album.";
         }
@@ -88,7 +85,7 @@ public class AlbumRESTJSON implements AlbumInterface {
     @Path("{isrc}/{title}/{description}/{releaseYear}/{artistFirstName}/{artistLastName}/{albumCover}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String updateAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description")  String description
+    public String updateAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description") String description
             , @PathParam("releaseYear") int releaseYear, @PathParam("artistFirstName") String artistFirstName, @PathParam("artistLastName") String artistLastName, @PathParam("albumCover") String albumCover) {
         try {
 
@@ -103,8 +100,7 @@ public class AlbumRESTJSON implements AlbumInterface {
 //            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
 
 
-
-            return albumImplementation.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null,null));
+            return albumImplementation.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null, null));
         } catch (Exception e) {
             System.out.println("Exception caught :" + e);
             return "Error updating album.";
@@ -168,16 +164,18 @@ public class AlbumRESTJSON implements AlbumInterface {
     @Path("{isrc}")
     public Response getCoverImage(@PathParam("isrc") String isrc) {
         String errorMessage;
-        try{
+        try {
 
 
             return Response.ok(new StreamingOutput() {
                 public void write(OutputStream output) throws IOException, WebApplicationException {
                     output.write(blobAsBytes);
-                }}).header("Content-Type", coverImage.getMimeType()).build();
+                }
+            }).header("Content-Type", coverImage.getMimeType()).build();
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             errorMessage = "There was an error getting the cover image from the server database.";
         }
 
     }
+}
