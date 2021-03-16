@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumMapper {
+    private static AlbumMapper AlbumDBConfig;
     private static final String DRIVER = AlbumDBConfig.DRIVER;
     private static final String URL = AlbumDBConfig.URL;
     private static final String USERNAME = AlbumDBConfig.USERNAME;
     private static final String PASSWORD = AlbumDBConfig.PASSWORD;
 
-    public Album select(String isrc) {
+    public static Album select(String isrc) {
         Album album = null;
         Connection connection = null;
         PreparedStatement statement = null;
@@ -59,7 +60,7 @@ public class AlbumMapper {
         }
         return album;
     }
-    public List<Album> selectAll() {
+    public static List<Album> selectAll() {
         List<Album> albums = new ArrayList<>();
         Connection connection = null;
         Statement statement = null;

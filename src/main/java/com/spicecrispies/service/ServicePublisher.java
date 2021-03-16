@@ -1,7 +1,6 @@
 
 package com.spicecrispies.service;
 
-import com.spicecrispies.service.LogEntryImpl;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;

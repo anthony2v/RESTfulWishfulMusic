@@ -9,25 +9,21 @@ import java.time.LocalDateTime;
 
 public class LogEntry {
 
-    private Timestamp timestamp;  // not sure about this
+    private LocalDateTime dateTime;
     private ChangeType changeType;
     private String recordKey;
 
     public LogEntry() { }
 
-    public LogEntry(Timestamp timestamp, ChangeType changeType, String recordKey) {
-        this.timestamp = timestamp;
+    public LogEntry(LocalDateTime dateTime, ChangeType changeType, String recordKey) {
+        this.dateTime = dateTime;
         this.changeType = changeType;
         this.recordKey = recordKey;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
+    public LocalDateTime getDateTime() { return dateTime; }
+    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 
     public ChangeType getChangeType() {
         return changeType;
@@ -48,7 +44,7 @@ public class LogEntry {
 
     public String toString(){
         String logInfo;
-        logInfo = "Date TimeStamp: " + timestamp + " , changeType: " + changeType + " , Record Key: " + recordKey + "\n";
+        logInfo = "Date & Time: " + dateTime + " , changeType: " + changeType + " , Record Key: " + recordKey + "\n";
         return logInfo;
     }
 }

@@ -9,7 +9,10 @@ import com.spicecrispies.core.logging.LogEntry;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 public class AlbumImplementation implements AlbumInterface, Serializable {
@@ -111,7 +114,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     }
 
     @Override
-    public String getChangeLogs(Timestamp fromDate, Timestamp toDate, ChangeType changeType) throws RepException {
+    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
         return null;
     }
 
@@ -134,6 +137,6 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     }
 
     private void addLogEntry(String recordKey, ChangeType changeType){
-        logs.add(new LogEntry(new Timestamp(System.currentTimeMillis()), changeType, recordKey));
+        logs.add(new LogEntry(LocalDateTime.now(), changeType, recordKey));
     }
 }

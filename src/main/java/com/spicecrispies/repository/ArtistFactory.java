@@ -1,7 +1,8 @@
 package com.spicecrispies.repository;
 
-import com.spicecrispies.interfaces.ArtistInterface;
-import com.spicecrispies.implementations.ArtistImplementation;
+import com.spicecrispies.core.interfaces.ArtistInterface;
+
+
 
 public class ArtistFactory {
 

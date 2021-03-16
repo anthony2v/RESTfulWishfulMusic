@@ -1,4 +1,4 @@
-package com.spicecrispies.interfaces;
+package com.spicecrispies.core.interfaces;
 
 public interface ArtistInterface {
     String listArtists() throws Exception;
