@@ -5,6 +5,7 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public interface AlbumInterface {
 
@@ -18,6 +19,6 @@ public interface AlbumInterface {
     String deleteAlbumCoverImage(String isrc) throws RepException;;
     AlbumCover getAlbumCoverImage(String isrc) throws RepException;
     //log entries are sorted chronologically by the time-stamp.
-    String getChangeLogs(Timestamp fromDate, Timestamp toDate, ChangeType changeType) throws RepException;
+    String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException;
     void clearLogs() throws RepException;
 }

@@ -7,40 +7,71 @@ import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.logging.LogFault;
 
-import java.sql.Timestamp;
+import javax.jws.WebService;
+
+
 import java.util.ArrayList;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+
+
+@WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogInterface")
 public class SOAPLogEntry implements LogInterface {
     private LogManagerInterface logManaging = (LogManagerInterface) new LogManager();
 
-
     @Override
-    public void getChangeLogs(Timestamp fromDate, Timestamp toDate, String changeType) throws LogFault{
+    public ArrayList<LogEntry> getChangeLogs(String from, String to, String changeType) throws LogFault {
         ArrayList<LogEntry> logs = new ArrayList<>();
-        Timestamp fromDateTime = null;
-        Timestamp toDateTime = null;
-        ChangeType change_type = null;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fromDateTime = null;
+        LocalDateTime toDateTime = null;
+        ChangeType type = null;
 
         if(!changeType.equals(""))
         {
             if(changeType.equals("CREATE") || changeType.equals("UPDATE") || changeType.equals("DELETE"))
             {
-                change_type = ChangeType.valueOf(changeType);
+                type = ChangeType.valueOf(changeType);
             }
             else{
-                throw new LogFault("ONLY valid ChangeType: CREATE , UPDATE, DELETE");
+                throw new LogFault("Only valid ChangeType(CREATE, UPDATE, DELLETE) accepted !!");
             }
-        } }
+        }
 
+        if(from != null && !from.equals(""))
+        {
+            try {
+                fromDateTime = LocalDateTime.parse(from, dateFormatter);
+            }
+            catch (DateTimeParseException pe)
+            {
+                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if(to != null && !to.equals("")){
+            try {
+                toDateTime = LocalDateTime.parse(to, dateFormatter);
+            }
+            catch (DateTimeParseException pe)
+            {
+                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        return logs;
+
+    }
 
     @Override
-        public String clearLogs() throws LogFault{
+    public String clearLogs() throws LogFault {
         try {
             logManaging.clearLogs();
-
-            return "Log cleared";
+            return "Logs cleared";
         } catch(RepException e) {
             throw new LogFault(e.getMessage());
         }
     }
 }
+

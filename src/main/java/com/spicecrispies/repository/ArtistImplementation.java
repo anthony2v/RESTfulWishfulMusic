@@ -1,7 +1,7 @@
-package com.spicecrispies.implementations;
+package com.spicecrispies.repository;
 
+import com.spicecrispies.core.interfaces.ArtistInterface;
 import com.spicecrispies.entities.Artist;
-import com.spicecrispies.interfaces.ArtistInterface;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;

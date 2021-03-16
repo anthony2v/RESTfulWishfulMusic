@@ -1,42 +1,52 @@
 package com.spicecrispies.service;
 
+import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.logging.LogFault;
+import com.spicecrispies.persistence.AlbumMapper;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LogManager implements LogManagerInterface {
-    @Override
-    public ArrayList<LogEntry> listLog() {
-        return null;
+    AlbumMapper album_mapper;
+    List<Album> logs = new ArrayList<>();
+    public List<Album> listLog() {
+
+        logs = AlbumMapper.selectAll();
+
+        return logs;  //Get the whole list
     }
 
-    @Override
-    public ArrayList<LogEntry> listLog(Timestamp fromDate, Timestamp toDate) {
-        return null;
-    }
+    //Get list based on ChangeType and isrc
+    public List<Album> listLog(ChangeType typeOfChange, String isrc) {
+       
+        logs = (List<Album>) AlbumMapper.select(isrc);
 
-    @Override
-    public ArrayList<LogEntry> listLog(Timestamp fromDate, Timestamp toDate, ChangeType typeOfChange) {
-        return null;
-    }
-
-    @Override
-    public ArrayList<LogEntry> listLog(ChangeType typeOfChange) {
-        return null;
+        return logs;
     }
 
     @Override
     public boolean addLog(LogEntry log) throws RepException {
-        return false;
+        LocalDateTime date = log.getDateTime();
+        String typeOfChange = log.getChangeType().toString();
+        String recordKey = log.getRecordKey();
+
+        if(recordKey.equals("") || typeOfChange.equals(""))
+        {
+            throw new RepException("RECORD KEY AND CHANGETYPE MISSING");
+        }
+
+        album_mapper.
+        return added;
     }
 
-    @Override
+
     public String clearLogs() throws RepException {
-        return null;
+        throw new RepException("ERROR: CLEAR LOG is not yet supported.");
     }
 }

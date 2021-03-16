@@ -1,17 +1,18 @@
 package com.spicecrispies.core.interfaces;
 
+import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.logging.LogEntry;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface LogManagerInterface {
-    ArrayList<LogEntry> listLog();
-    ArrayList<LogEntry> listLog(Timestamp fromDate, Timestamp toDate);
-    ArrayList<LogEntry> listLog(Timestamp fromDate, Timestamp toDate, ChangeType typeOfChange);
-    ArrayList<LogEntry> listLog(ChangeType typeOfChange);
+    List<Album> listLog();
+    List<Album> listLog(ChangeType typeOfChange, String isrc);
+
     boolean addLog(LogEntry log) throws RepException;
     String clearLogs() throws RepException;
 
