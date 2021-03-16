@@ -198,7 +198,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("DELETE FROM album WHERE isrc = ?");
