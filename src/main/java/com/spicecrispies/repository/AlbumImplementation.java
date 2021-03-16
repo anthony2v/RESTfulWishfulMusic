@@ -136,6 +136,8 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
        return AlbumMapper.select(isrc).getAlbumCover();
     }
 
+
+
     @Override
     public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
         LogManagerImplementation logMapper = new LogManagerImplementation();
