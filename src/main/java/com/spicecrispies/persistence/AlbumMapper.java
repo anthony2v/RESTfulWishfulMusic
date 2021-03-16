@@ -1,6 +1,7 @@
 package com.spicecrispies.persistence;
 
 import com.spicecrispies.core.entities.Album;
+import com.spicecrispies.core.entities.AlbumCover;
 
 import java.sql.*;
 
@@ -28,7 +29,7 @@ public class AlbumMapper {
                     resultSet.getString("artist_first_name"),
                     resultSet.getString("artist_last_name"),
                     new AlbumCover(
-                            resultSet.getBlob("cover_image"),
+                            resultSet.getBytes("cover_image"),
                             resultSet.getString("cover_image_type")
                     )
             );
@@ -52,7 +53,7 @@ public class AlbumMapper {
                 se2.printStackTrace();
             }
         }
-        return Album;
+        return album;
     }
     public void insert(Album album) {
         Connection connection = null;
@@ -62,8 +63,8 @@ public class AlbumMapper {
             connection = DriverManager.getConnection(URL);
             statement = connection.createStatement();
             String sql = "INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name, cover_image, cover_image_type) VALUES (" +
-                        album.getIsrc(),album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtistFirstName(), album.getArtistLastName(),
-                        album.getAlbumCover().getAlbumCoverImage(), album.getAlbumCover().getMimeType() + ")";
+                        album.getIsrc() +"," + album.getTitle() +"," + album.getDescription() +"," + album.getReleaseYear() +"," + album.getArtistFirstName() +"," + album.getArtistLastName() +"," +
+                        album.getAlbumCover().getAlbumCoverImage() +"," + album.getAlbumCover().getMimeType() + ")";
             ResultSet resultSet = statement.executeQuery(sql);
             resultSet.close();
             statement.close();
@@ -94,8 +95,8 @@ public class AlbumMapper {
             connection = DriverManager.getConnection(URL);
             statement = connection.createStatement();
             String sql = "UPDATE album SET title = album.getTitle(), content_description = album.getDescription(), year = album.getReleaseYear(), " +
-                    "artist_first_name = album.getArtistFirstName(), artist_last_name = album.getArtistLastName(), cover_image = album.getAlbumCover().getAlbumCoverImage(), " +
-                    "cover_image_type = album.getAlbumCover().getMimeType() WHERE isrc = " + album.getIsrc() + ")";
+                        "artist_first_name = album.getArtistFirstName(), artist_last_name = album.getArtistLastName(), cover_image = album.getAlbumCover().getAlbumCoverImage(), " +
+                        "cover_image_type = album.getAlbumCover().getMimeType() WHERE isrc = " + album.getIsrc() + ")";
             ResultSet resultSet = statement.executeQuery(sql);
             resultSet.close();
             statement.close();
