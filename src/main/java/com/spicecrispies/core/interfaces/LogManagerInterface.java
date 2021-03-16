@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface LogManagerInterface {
-    List<Album> listLog();
-    List<Album> listLog(ChangeType typeOfChange, String isrc);
-
-    boolean addLog(LogEntry log) throws RepException;
-    String clearLogs() throws RepException;
+    List<LogEntry> getChangeLogs();
+    List<LogEntry> getChangeLogs(String fromDate, String toDate, String changeType) throws com.spicecrispies.core.logging.RepException;
+    boolean addLog(LogEntry log) throws RepException, com.spicecrispies.core.logging.RepException;
+    String clearLogs() throws RepException, com.spicecrispies.core.logging.RepException;
 
 }

@@ -1,11 +1,10 @@
 package com.spicecrispies.service;
 
 import com.spicecrispies.core.enums.ChangeType;
-import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.LogInterface;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.logging.LogFault;
+import com.spicecrispies.core.logging.RepException;
 import com.spicecrispies.repository.LogManagerImplementation;
 
 import javax.jws.WebService;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 
 
 @WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogInterface")
@@ -24,7 +22,7 @@ public class SOAPLogEntry implements LogInterface {
     private LogManagerInterface logManaging = (LogManagerInterface) new LogManagerImplementation();
 
     @Override
-    public ArrayList<LogEntry> getChangeLogs(String from, String to, String changeType) throws LogFault {
+    public ArrayList<LogEntry> getChangeLogs(String from, String to, String changeType) throws RepException {
         ArrayList<LogEntry> logs = new ArrayList<>();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
@@ -38,7 +36,7 @@ public class SOAPLogEntry implements LogInterface {
                 type = ChangeType.valueOf(changeType);
             }
             else{
-                throw new LogFault("Only valid ChangeType(CREATE, UPDATE, DELLETE) accepted !!");
+                throw new RepException("Only valid ChangeType(CREATE, UPDATE, DELLETE) accepted !!");
             }
         }
 
@@ -49,7 +47,7 @@ public class SOAPLogEntry implements LogInterface {
             }
             catch (DateTimeParseException pe)
             {
-                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+                throw new RepException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
         if(to != null && !to.equals("")){
@@ -58,7 +56,7 @@ public class SOAPLogEntry implements LogInterface {
             }
             catch (DateTimeParseException pe)
             {
-                throw new LogFault("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+                throw new RepException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
         return logs;
@@ -66,12 +64,12 @@ public class SOAPLogEntry implements LogInterface {
     }
 
     @Override
-    public String clearLogs() throws LogFault {
+    public String clearLogs() throws RepException {
         try {
             logManaging.clearLogs();
             return "Logs cleared";
-        } catch(RepException e) {
-            throw new LogFault(e.getMessage());
+        } catch(com.spicecrispies.core.exceptions.RepException e) {
+            throw new RepException(e.getMessage());
         }
     }
 }
