@@ -16,6 +16,12 @@ public class AlbumCover {
         this.albumCoverImage = albumCoverImage;
         this.mimeType = mimeType;
     }
+    public AlbumCover(String isrc){
+        this.isrc = isrc;
+        albumCoverImage= new byte[1];
+        mimeType = "";
+
+    }
 
     public byte[] getAlbumCoverImage() {
         return albumCoverImage;

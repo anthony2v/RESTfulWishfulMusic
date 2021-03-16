@@ -141,13 +141,11 @@ public class AlbumRESTJSON implements AlbumInterface {
     }
 
     @Override
-    public String updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
-        return null;
+    public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
     }
 
     @Override
-    public String deleteAlbumCoverImage(String isrc) throws RepException {
-        return null;
+    public void deleteAlbumCoverImage(String isrc) throws RepException {
     }
 
     @GET
@@ -178,4 +176,5 @@ public class AlbumRESTJSON implements AlbumInterface {
         }
 
     }
+    
 }
