@@ -108,7 +108,7 @@ public class AlbumMapper {
         }
         return albums;
     }
-    public void insert(Album album) {
+    public static void insert(Album album) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -144,7 +144,7 @@ public class AlbumMapper {
             }
         }
     }
-    public void update(Album album) {
+    public static void update(Album album) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -180,7 +180,7 @@ public class AlbumMapper {
             }
         }
     }
-    public void delete(String isrc) {
+    public static void delete(String isrc) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
