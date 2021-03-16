@@ -4,18 +4,14 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.interfaces.LogInterface;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.logging.RepException;
+import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.repository.LogManagerImplementation;
-
-import javax.jws.WebService;
-
-
-import java.util.ArrayList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
+import java.util.ArrayList;
+import javax.jws.WebService;
 
 @WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogInterface")
 public class SOAPLogEntry implements LogInterface {

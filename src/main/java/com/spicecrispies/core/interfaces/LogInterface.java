@@ -1,7 +1,7 @@
 package com.spicecrispies.core.interfaces;
 
+import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.logging.RepException;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
