@@ -2,18 +2,14 @@ package com.spicecrispies.core.logging;
 
 import com.spicecrispies.core.enums.ChangeType;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.sql.Timestamp;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class LogEntry {
+public class LogEntry implements Serializable {
 
     private LocalDateTime dateTime;
     private ChangeType changeType;
     private String recordKey;
-
-    public LogEntry() { }
 
     public LogEntry(LocalDateTime dateTime, ChangeType changeType, String recordKey) {
         this.dateTime = dateTime;
@@ -21,9 +17,13 @@ public class LogEntry {
         this.recordKey = recordKey;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 
-    public LocalDateTime getDateTime() { return dateTime; }
-    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     public ChangeType getChangeType() {
         return changeType;
@@ -41,12 +41,7 @@ public class LogEntry {
         this.recordKey = recordKey;
     }
 
-
     public String toString(){
-        String logInfo;
-        logInfo = "Date & Time: " + dateTime + " , changeType: " + changeType + " , Record Key: " + recordKey + "\n";
-        return logInfo;
+        return String.format("Date & Time: %s, Change Type: %s, Record Key: %s", dateTime, changeType, recordKey);
     }
 }
-
-
