@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 public class AlbumRESTJSON {
     private static final AlbumInterface albumImplementation = AlbumFactory.getInstance();
 
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String listAlbum() {
