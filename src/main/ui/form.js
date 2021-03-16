@@ -7,16 +7,13 @@ submit.addEventListener('click', function(event) {
     const releaseYear = document.getElementById("releaseYear").value;
     const artistFirstName = document.getElementById("firstName").value;
     const artistLastName = document.getElementById("lastName").value;
-    console.log("SUBMIT");
-    console.log(releaseYear);
-    // event.target.disabled = true;
+    const file = document.getElementById("albumCover");
 });
 
 // Dropdown menu on change event
 dropdown = document.getElementById("actionSelect");
-dropdown.addEventListener('change', function(event) {
-    console.log(dropdown.value);
-    if (dropdown.value == 4) {
+dropdown.addEventListener('change', function() {
+    if (dropdown.value == 1 || dropdown.value == 4) {
         document.getElementById("title").disabled = true;
         document.getElementById("description").disabled = true;
         document.getElementById("releaseYear").disabled = true;
