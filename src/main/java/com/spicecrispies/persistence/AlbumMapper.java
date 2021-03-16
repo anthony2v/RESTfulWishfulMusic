@@ -2,17 +2,23 @@ package com.spicecrispies.persistence;
 
 import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.entities.AlbumCover;
+import com.spicecrispies.core.enums.ChangeType;
+import com.spicecrispies.core.exceptions.RepException;
+import com.spicecrispies.core.interfaces.LogManagerInterface;
+import com.spicecrispies.core.logging.LogEntry;
+import com.spicecrispies.repository.LogManagerFactory;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumMapper {
-    private static AlbumMapper AlbumDBConfig;
     private static final String DRIVER = AlbumDBConfig.DRIVER;
     private static final String URL = AlbumDBConfig.URL;
     private static final String USERNAME = AlbumDBConfig.USERNAME;
     private static final String PASSWORD = AlbumDBConfig.PASSWORD;
+    private static final LogManagerInterface logManager = LogManagerFactory.getInstance();
 
     public static Album select(String isrc) {
         Album album = null;
@@ -112,6 +118,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name, cover_image, cover_image_type) VALUES (?,?,?,?,?,?,?,?)");
@@ -126,6 +133,9 @@ public class AlbumMapper {
             statement.execute();
             statement.close();
             connection.close();
+        } catch (RepException re) {
+            System.out.println(re.getMessage());
+            re.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
             System.out.println("AN ERROR OCCURRED REGISTERING JDBC DRIVER");
             cnfe.printStackTrace();
@@ -148,6 +158,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, cover_image = ?, cover_image_type = ? WHERE isrc = ?");
@@ -162,6 +173,9 @@ public class AlbumMapper {
             statement.execute();
             statement.close();
             connection.close();
+        } catch (RepException re) {
+            System.out.println(re.getMessage());
+            re.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
             System.out.println("AN ERROR OCCURRED REGISTERING JDBC DRIVER");
             cnfe.printStackTrace();
@@ -184,6 +198,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("DELETE FROM album WHERE isrc = ?");
@@ -191,6 +206,9 @@ public class AlbumMapper {
             statement.execute();
             statement.close();
             connection.close();
+        } catch (RepException re) {
+            System.out.println(re.getMessage());
+            re.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
             System.out.println("AN ERROR OCCURRED REGISTERING JDBC DRIVER");
             cnfe.printStackTrace();
