@@ -6,6 +6,7 @@ import com.spicecrispies.core.interfaces.LogInterface;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.logging.LogFault;
+import com.spicecrispies.repository.LogManagerImplementation;
 
 import javax.jws.WebService;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 @WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogInterface")
 public class SOAPLogEntry implements LogInterface {
-    private LogManagerInterface logManaging = (LogManagerInterface) new LogManager();
+    private LogManagerInterface logManaging = (LogManagerInterface) new LogManagerImplementation();
 
     @Override
     public ArrayList<LogEntry> getChangeLogs(String from, String to, String changeType) throws LogFault {

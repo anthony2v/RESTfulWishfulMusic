@@ -1,6 +1,7 @@
 
 package com.spicecrispies.service;
 
+import com.spicecrispies.repository.LogManagerImplementation;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
@@ -26,7 +27,7 @@ public class ServicePublisher {
         System.out.println("SOAP Service listening on " + BASE_URI + "?wsdl");
 
         NetworkListener networkListener = new NetworkListener("jaxws-listener", "0.0.0.0", port);
-        HttpHandler httpHandler = new JaxwsHandler(new LogEntryImpl());
+        HttpHandler httpHandler = new JaxwsHandler(new LogManagerImplementation());
 
         HttpServer httpServer = new HttpServer();
         httpServer.getServerConfiguration().addHttpHandler(httpHandler, servicePath);
