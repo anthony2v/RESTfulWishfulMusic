@@ -145,16 +145,20 @@ public class AlbumMapper {
     }
     public void update(Album album) {
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         try {
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.createStatement();
-            String sql = "UPDATE album SET title = album.getTitle(), content_description = album.getDescription(), year = album.getReleaseYear(), " +
-                        "artist_first_name = album.getArtistFirstName(), artist_last_name = album.getArtistLastName(), cover_image = album.getAlbumCover().getAlbumCoverImage(), " +
-                        "cover_image_type = album.getAlbumCover().getMimeType() WHERE isrc = " + album.getIsrc() + ")";
-            ResultSet resultSet = statement.executeQuery(sql);
-            resultSet.close();
+            statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, cover_image = ?, cover_image_type = ? WHERE isrc = ?");
+            statement.setString(1, album.getTitle());
+            statement.setString(2, album.getDescription());
+            statement.setInt(3, album.getReleaseYear());
+            statement.setString(4, album.getArtistFirstName());
+            statement.setString(5, album.getArtistLastName());
+            statement.setBytes(6, album.getAlbumCover().getAlbumCoverImage());
+            statement.setString(7, album.getAlbumCover().getMimeType());
+            statement.setString(8, album.getIsrc());
+            statement.execute();
             statement.close();
             connection.close();
         } catch (ClassNotFoundException cnfe) {
