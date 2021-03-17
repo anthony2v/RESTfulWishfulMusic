@@ -152,6 +152,7 @@ public class AlbumRESTJSON implements AlbumInterface {
 
     @Override
     public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
+        System.out.println("Change Logs");
         return  getChangeLogs(fromDate,toDate, changeType);
     }
 
