@@ -1,7 +1,6 @@
 package com.spicecrispies.core.logging;
 
 import com.spicecrispies.core.enums.ChangeType;
-import com.spicecrispies.core.logging.LocalDateTimeAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

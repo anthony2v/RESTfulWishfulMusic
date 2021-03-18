@@ -4,6 +4,7 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.exceptions.RepException;
+import com.spicecrispies.core.logging.LocalDateTimeXmlAdapter;
 
 import javax.jws.WebService;
 import java.time.LocalDateTime;
@@ -25,11 +26,6 @@ public class LogManagerImplementation implements LogManagerInterface {
             logs.add(log);
         }
         return true;
-    }
-
-    @Override
-    public List<LogEntry> getChangeLogs() {
-        return logs;
     }
 
     @Override
