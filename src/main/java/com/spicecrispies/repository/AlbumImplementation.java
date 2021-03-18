@@ -6,7 +6,6 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.AlbumInterface;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.logging.LogFault;
 import com.spicecrispies.persistence.AlbumMapper;
 
 import java.io.Serializable;
@@ -145,8 +144,8 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
         List<LogEntry> changeLogs = null;
         try {
             changeLogs = logMapper.getChangeLogs(fromDate.format(dateFormatter), toDate.format(dateFormatter), changeType.toString());
-        } catch (LogFault ex) {
-            throw new RepException("LogFault exception thrown: " + ex.getMessage());
+        } catch (RepException ex) {
+            throw new RepException("RepException thrown: " + ex.getMessage());
         }
 
         StringBuilder str = new StringBuilder();
