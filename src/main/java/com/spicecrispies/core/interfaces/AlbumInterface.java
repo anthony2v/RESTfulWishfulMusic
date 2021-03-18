@@ -15,8 +15,8 @@ public interface AlbumInterface {
     String getAlbumInfo(String isrc) throws RepException;
     //Albums are sorted alphabetically by title.
     String listAlbums() throws RepException;
-    void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException;;
-    void deleteAlbumCoverImage(String isrc) throws RepException;;
+    void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException;
+    void deleteAlbumCoverImage(String isrc) throws RepException;
     AlbumCover getAlbumCoverImage(String isrc) throws RepException;
     //log entries are sorted chronologically by the time-stamp.
     String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException;

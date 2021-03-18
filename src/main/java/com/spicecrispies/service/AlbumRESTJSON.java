@@ -1,180 +1,170 @@
 package com.spicecrispies.service;
 
+import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.entities.AlbumCover;
+import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.AlbumInterface;
-import com.spicecrispies.persistence.AlbumMapper;
+import com.spicecrispies.core.interfaces.LogManagerInterface;
+import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.repository.AlbumFactory;
+import com.spicecrispies.repository.AlbumImplementation;
+import com.spicecrispies.repository.LogManagerFactory;
+import com.spicecrispies.repository.LogManagerImplementation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Path("album")
 public class AlbumRESTJSON implements AlbumInterface {
-    private static final AlbumInterface albumImplementation = AlbumFactory.getInstance();
-    private static AlbumMapper logData;
-
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String listAlbum() {
-        try {
-            logData.selectAll();
-            return albumImplementation.listAlbums();
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e.getMessage());
-            return "Error listing albums.";
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{isrc}")
-    public String getAlbum(@PathParam("isrc") String isrc) {
-        try {
-
-            String album = albumImplementation.getAlbumInfo(isrc);
-
-            if (album.equals("")) { // No such album
-                return "No album with an ISRC of " + isrc;
-            } else {
-
-            }
-
-            Album album = albumManager.getAlbum(isrc);
-            return album;
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e.getMessage());
-            return "Error getting album.";
-        }
-    }
-
-
-    //TODO: Update end point to upload image so it can be stored in AlbumCover
+    private AlbumInterface albumManager = (AlbumImplementation) AlbumFactory.getInstance();
+    private LogManagerInterface logManager = (LogManagerImplementation) LogManagerFactory.getInstance();
+    private AlbumImplementation albumCover;
 
     @POST
-    @Path("{isrc}/{title}/{description}/{releaseYear}/{artistFirstName}/{artistLastName}/{albumCover}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String addAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description") String description
-            , @PathParam("releaseYear") int releaseYear, @PathParam("artistFirstName") String artistFirstName, @PathParam("artistLastName") String artistLastName, @PathParam("albumCover") String albumCover) {
+    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover){
         try {
+            albumManager.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
 
-//            boolean success = albumManager.addAlbum(album);
-//
-//            if(!success) {
-//                return Response.status(Response.Status.FORBIDDEN)
-//                        .entity(String.format("Failed to add album"))
-//                        .build();
-//            }
+            if (albumManager.getAlbumInfo(isrc).isEmpty())
+            {
+                return "Failed to create album";
+            }
 
-            //logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.ADD, album.getIsrc()));
-            return albumImplementation.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null, null));
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-            return "Error adding album.";
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, isrc));
+
+            return "CREATING ALBUM SUCCESS!";
+        } catch(RepException re) {
+            return re.getMessage();
+        } catch(Exception e) {
+            return "ERROR in creating album";
         }
     }
+
 
     @PUT
-    @Path("{isrc}/{title}/{description}/{releaseYear}/{artistFirstName}/{artistLastName}/{albumCover}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String updateAlbum(@PathParam("isrc") String isrc, @PathParam("title") String title, @PathParam("description") String description
-            , @PathParam("releaseYear") int releaseYear, @PathParam("artistFirstName") String artistFirstName, @PathParam("artistLastName") String artistLastName, @PathParam("albumCover") String albumCover) {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         try {
 
-//            boolean success = albumManager.updateAlbum(album);
-//
-//            if (!success) {
-//                return Response.status(Response.Status.FORBIDDEN)
-//                        .entity("Failed to update album: no album with an ISRC of " + album.getIsrc())
-//                        .build();
-//            }
-//
-//            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.UPDATE, album.getIsrc()));
+            albumManager.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
 
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
 
-            return albumImplementation.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, new AlbumCover(null, null));
-        } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-            return "Error updating album.";
+            return "UPDATE SUCCESS!!";
+        } catch(RepException re) {
+            return re.getMessage();
+        } catch(Exception e) {
+            return "ERROR in updating the album!";
         }
-    }
-
-    @Override
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
-        return null;
-    }
-
-    @Override
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
-        return null;
     }
 
     @DELETE
-    @Path("{isrc}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("{isrc}")
     public String deleteAlbum(@PathParam("isrc") String isrc) {
         try {
-            logManager.addLog(new Log(LocalDateTime.now(), Log.ChangeType.DELETE, isrc));
-            return albumImplementation.deleteAlbum(isrc);
+            albumManager.deleteAlbum(isrc);
+
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
+
+            return "Album Deleted";
+        } catch (RepException re) {
+            return re.getMessage();
+
         } catch (Exception e) {
-            System.out.println("Exception caught :" + e);
-            return "Error deleting album.";
+            return "ERROR in trying to delete the album";
         }
     }
 
-    @Override
-    public String getAlbumInfo(String isrc) throws RepException {
-        return null;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{isrc}")
+    public String getAlbumInfo(@PathParam("isrc") String isrc) {
+        try {
+            String album = albumManager.getAlbumInfo(isrc);
+
+            if (album == null){
+                return "No album with an ISRC of " + isrc; }
+            else
+            {
+                return "Album Info" + album;
+            }
+
+        } catch(Exception e) {
+            return "An error occurred while trying to get the album";
+        }
     }
 
-    @Override
-    public String listAlbums() throws RepException {
-        return null;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String listAlbums() {
+        try {
+            System.out.println(albumManager.listAlbums());
+            return "LISTING CORRECT";
+        } catch(Exception e) {
+            return "ERROR in list of albums";
+        }
     }
+
 
     @Override
     public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
+
+        if(albumCover.getAlbumCoverImage() == null ){
+            System.out.println("ALBUM COVER IMAGE UPDATED");
+        }else{
+            System.out.println("UNABLE to update album cover image.");
+        }
+    }
+
+
+    @DELETE
+    @Path("{isrc}")
+    public void deleteAlbumCoverImage(@PathParam("isrc") String isrc) throws RepException{
+        try {
+            albumCover.deleteAlbumCoverImage(isrc);
+            if(albumCover.getAlbumCoverImage(isrc) == null ){
+                System.out.println("ALBUM COVER IMAGE DELETED");
+            }else{
+                System.out.println("UNABLE to delete album cover image.");
+            }
+        }
+        catch(RepException e) {
+            System.out.println("ERROR IN DELETING album cover image");
+        }
     }
 
     @Override
-    public void deleteAlbumCoverImage(String isrc) throws RepException {
-    }
-
-    @GET
-    @Path("{isrc}")
     public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
-        AlbumCover coverImage = coverImageManager.getCoverImageByAlbumIsrc(isrc);
-        int blobLength = (int) coverImage.getBlob().length();
-        byte[] blobAsBytes = coverImage.getBlob().getBytes(1, blobLength);
-
-        return null;
-    }
-
-    @GET
-    @Path("{isrc}")
-    public Response getCoverImage(@PathParam("isrc") String isrc) {
-        String errorMessage;
         try {
-
-
-            return Response.ok(new StreamingOutput() {
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    output.write(blobAsBytes);
-                }
-            }).header("Content-Type", coverImage.getMimeType()).build();
-
-        } catch (SQLException ex) {
-            errorMessage = "There was an error getting the cover image from the server database.";
+            return albumCover.getAlbumCoverImage(isrc);
+        } catch (com.spicecrispies.core.exceptions.RepException e) {
+            throw new RepException(e.getMessage());
         }
-
     }
-    
+
+    @Override
+    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
+        System.out.println("Change Logs");
+        return  getChangeLogs(fromDate,toDate, changeType);
+    }
+
+
+
+    @Override
+    public void clearLogs() throws RepException {
+        try {
+            logManager.clearLogs();
+            System.out.println("Logs cleared");
+        } catch(com.spicecrispies.core.exceptions.RepException e) {
+            throw new RepException(e.getMessage());
+        }
+    }
 }

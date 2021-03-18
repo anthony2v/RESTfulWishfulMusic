@@ -5,6 +5,7 @@ import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.exceptions.RepException;
 
+import javax.jws.WebService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogManagerInterface")
 public class LogManagerImplementation implements LogManagerInterface {
     private static final List<LogEntry> logs = Collections.synchronizedList(new ArrayList<>());
 
