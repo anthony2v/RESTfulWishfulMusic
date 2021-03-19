@@ -118,7 +118,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.CREATE, album.getIsrc());
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name, cover_image, cover_image_type) VALUES (?,?,?,?,?,?,?,?)");
@@ -158,7 +158,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.UPDATE, album.getIsrc());
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, cover_image = ?, cover_image_type = ? WHERE isrc = ?");
@@ -198,7 +198,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.UPDATE, isrc);
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("DELETE FROM album WHERE isrc = ?");

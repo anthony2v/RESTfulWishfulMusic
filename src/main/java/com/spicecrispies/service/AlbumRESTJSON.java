@@ -19,24 +19,22 @@ import java.time.LocalDateTime;
 
 
 @Path("album")
-public class AlbumRESTJSON implements AlbumInterface {
+public class AlbumRESTJSON {
     private AlbumInterface albumManager = (AlbumImplementation) AlbumFactory.getInstance();
     private LogManagerInterface logManager = (LogManagerImplementation) LogManagerFactory.getInstance();
-    private AlbumImplementation albumCover;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover){
+    public String createAlbum(Album album){
         try {
-            albumManager.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
+            albumManager.createAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtistFirstName(), album.getArtistLastName(), album.getAlbumCover());
 
-            if (albumManager.getAlbumInfo(isrc).isEmpty())
+            if (albumManager.getAlbumInfo(album.getIsrc()).isEmpty())
             {
                 return "Failed to create album";
             }
 
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.CREATE, album.getIsrc());
 
             return "CREATING ALBUM SUCCESS!";
         } catch(RepException re) {
@@ -49,13 +47,12 @@ public class AlbumRESTJSON implements AlbumInterface {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
+    public String updateAlbum(Album album) throws RepException {
         try {
 
-            albumManager.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
+            albumManager.updateAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtistFirstName(), album.getArtistLastName(), album.getAlbumCover());
 
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.UPDATE, album.getIsrc());
 
             return "UPDATE SUCCESS!!";
         } catch(RepException re) {
@@ -66,13 +63,12 @@ public class AlbumRESTJSON implements AlbumInterface {
     }
 
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")
     public String deleteAlbum(@PathParam("isrc") String isrc) {
         try {
             albumManager.deleteAlbum(isrc);
 
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.DELETE, isrc);
 
             return "Album Deleted";
         } catch (RepException re) {
@@ -113,9 +109,10 @@ public class AlbumRESTJSON implements AlbumInterface {
         }
     }
 
-
-    @Override
-    public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("updateCover/{isrc}")
+    public void updateAlbumCoverImage(@PathParam("isrc") String isrc, AlbumCover albumCover) throws RepException {
 
         if(albumCover.getAlbumCoverImage() == null ){
             System.out.println("ALBUM COVER IMAGE UPDATED");
@@ -126,11 +123,11 @@ public class AlbumRESTJSON implements AlbumInterface {
 
 
     @DELETE
-    @Path("{isrc}")
+    @Path("deleteCover/{isrc}")
     public void deleteAlbumCoverImage(@PathParam("isrc") String isrc) throws RepException{
         try {
-            albumCover.deleteAlbumCoverImage(isrc);
-            if(albumCover.getAlbumCoverImage(isrc) == null ){
+            albumManager.deleteAlbumCoverImage(isrc);
+            if(albumManager.getAlbumCoverImage(isrc) == null ){
                 System.out.println("ALBUM COVER IMAGE DELETED");
             }else{
                 System.out.println("UNABLE to delete album cover image.");
@@ -141,30 +138,30 @@ public class AlbumRESTJSON implements AlbumInterface {
         }
     }
 
-    @Override
-    public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
+    @GET
+    @Path("cover/{isrc}")
+    public AlbumCover getAlbumCoverImage(@PathParam("isrc") String isrc) throws RepException {
         try {
-            return albumCover.getAlbumCoverImage(isrc);
+            return albumManager.getAlbumCoverImage(isrc);
         } catch (com.spicecrispies.core.exceptions.RepException e) {
             throw new RepException(e.getMessage());
         }
     }
 
-    @Override
-    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
-        System.out.println("Change Logs");
-        return  getChangeLogs(fromDate,toDate, changeType);
-    }
 
-
-
-    @Override
-    public void clearLogs() throws RepException {
-        try {
-            logManager.clearLogs();
-            System.out.println("Logs cleared");
-        } catch(com.spicecrispies.core.exceptions.RepException e) {
-            throw new RepException(e.getMessage());
-        }
-    }
+//    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
+//        System.out.println("Change Logs");
+//        return logManager.getChangeLogs(fromDate.toString(),toDate.toString(), changeType.toString()).toString();
+//    }
+//
+//
+//
+//    public void clearLogs() throws RepException {
+//        try {
+//            logManager.clearLogs();
+//            System.out.println("Logs cleared");
+//        } catch(com.spicecrispies.core.exceptions.RepException e) {
+//            throw new RepException(e.getMessage());
+//        }
+//    }
 }

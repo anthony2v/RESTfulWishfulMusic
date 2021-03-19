@@ -4,7 +4,6 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.logging.LocalDateTimeXmlAdapter;
 
 import javax.jws.WebService;
 import java.time.LocalDateTime;
@@ -18,12 +17,13 @@ import java.util.List;
 public class LogManagerImplementation implements LogManagerInterface {
     private static final List<LogEntry> logs = Collections.synchronizedList(new ArrayList<>());
 
-    public boolean addLog(LogEntry log) throws RepException {
-        if (log == null || log.getDateTime() == null || log.getChangeType() == null || log.getRecordKey() == null) {
+    @Override
+    public boolean addLog(String dateTimeAsString, ChangeType changeType, String recordKey) throws RepException {
+        if (dateTimeAsString == null || changeType == null || recordKey == null) {
             throw new RepException("ERROR: Missing log attributes");
         }
         synchronized (logs) {
-            logs.add(log);
+            logs.add(new LogEntry(dateTimeAsString, changeType, recordKey));
         }
         return true;
     }
@@ -63,7 +63,8 @@ public class LogManagerImplementation implements LogManagerInterface {
         }
         List<LogEntry> toReturn = new ArrayList<>();
         for (LogEntry entry: logs) {
-            if (entry.getDateTime().isAfter(fromDateTime) && entry.getDateTime().isBefore(toDateTime)) {
+            LocalDateTime logDateTime = LocalDateTime.parse(entry.getDateTime(), dateFormatter);
+            if (logDateTime.isAfter(fromDateTime) && logDateTime.isBefore(toDateTime)) {
                 toReturn.add(entry);
             }
         }
