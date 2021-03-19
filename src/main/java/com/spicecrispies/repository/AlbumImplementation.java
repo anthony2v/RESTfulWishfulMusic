@@ -21,10 +21,6 @@ import java.util.concurrent.Semaphore;
 public class AlbumImplementation implements AlbumInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
     private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
-    //TODO: This will be stored in the database through data layer
-    //private static final ArrayList<Album> albums = new ArrayList<>();
-    //private static final ArrayList<LogEntry> logs = new ArrayList<>();
-
 
     @Override
     public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
@@ -33,8 +29,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
         getLock();
 
         if (getAlbumInfo(isrc).equalsIgnoreCase("")) {
-           // albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
-            AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
+           AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
 
             response = "Album with ISRC " + isrc +" added successfully.";
         } else {
@@ -49,21 +44,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         String response = "Album not updated. Verify that it has been added.";
         getLock();
-        /*for (Album album : albums) {
-            if (album.getIsrc().equalsIgnoreCase(isrc)) {
-                album.setTitle(title);
-                album.setDescription(description);
-                album.setReleaseYear(releaseYear);
-                album.setArtistFirstName(artistFirstName);
-                album.setArtistLastName(artistLastName);
-                album.setAlbumCover(albumCover);
-                response = "Album updated successfully";
-                break;
-            }
-        }*/
-
         AlbumMapper.update(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
-
         releaseLock();
         addLogEntry(isrc, ChangeType.UPDATE);
         return response;
@@ -73,13 +54,6 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     public String deleteAlbum(String isrc) throws RepException {
         String response = "Failed deleting album. Please check ISRC.";
         getLock();
-      /*  for (int i = 0; i < albums.size(); i++) {
-            if (albums.get(i).getIsrc().equalsIgnoreCase(isrc)) {
-                albums.remove(i);
-                response = "Album deleted successfully.";
-                break;
-            }
-        }*/
         AlbumMapper.delete(isrc);
         releaseLock();
         addLogEntry(isrc, ChangeType.DELETE);
@@ -88,13 +62,6 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
     @Override
     public String getAlbumInfo(String isrc) throws RepException {
-      /*  for (Album album : albums) {
-            if (album.getIsrc().equalsIgnoreCase(isrc)) {
-                return album.toString();
-            }
-        }
-
-       */
        return AlbumMapper.select(isrc).toString();
 
     }
@@ -103,11 +70,6 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     public String listAlbums() throws RepException {
         StringBuilder str = new StringBuilder();
         getLock();
-        /*
-        for (Album album : albums) {
-            str.append(album.toString()).append("\n");
-        }
-         */
         for (Album album : AlbumMapper.selectAll()) {
             str.append(album.toString()).append("\n");
         }
@@ -163,7 +125,6 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
 
     private void addLogEntry(String recordKey, ChangeType changeType) throws RepException{
-        //logs.add(new LogEntry(LocalDateTime.now(), changeType, recordKey));
         LogManagerImplementation logMapper = new LogManagerImplementation();
         logMapper.addLog(LocalDateTime.now().toString(),changeType,recordKey);
     }
