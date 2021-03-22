@@ -4,7 +4,6 @@ import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
-import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.repository.LogManagerFactory;
 
 import java.sql.*;
@@ -108,7 +107,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.CREATE, album.getIsrc());
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name) VALUES (?,?,?,?,?,?)");
@@ -146,7 +145,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.UPDATE, album.getIsrc());
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ? WHERE isrc = ?");
@@ -184,7 +183,7 @@ public class AlbumMapper {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.DELETE, isrc);
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             statement = connection.prepareStatement("DELETE FROM album WHERE isrc = ?");

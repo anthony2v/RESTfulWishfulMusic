@@ -97,7 +97,7 @@ public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable
     private void addLogEntry(String recordKey, ChangeType changeType) throws RepException{
         //logs.add(new LogEntry(LocalDateTime.now(), changeType, recordKey));
         LogManagerImplementation logMapper = new LogManagerImplementation();
-        logMapper.addLog(new LogEntry(LocalDateTime.now(),changeType,recordKey));
+        logMapper.addLog(LocalDateTime.now().toString(),changeType,recordKey);
     }
 
     private void getLock() throws RepException{

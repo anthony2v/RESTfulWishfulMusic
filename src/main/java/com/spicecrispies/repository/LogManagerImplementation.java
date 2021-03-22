@@ -4,7 +4,6 @@ import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.logging.LocalDateTimeXmlAdapter;
 
 import javax.jws.WebService;
 import java.time.LocalDateTime;
@@ -18,18 +17,19 @@ import java.util.List;
 public class LogManagerImplementation implements LogManagerInterface {
     private static final List<LogEntry> logs = Collections.synchronizedList(new ArrayList<>());
 
-    public boolean addLog(LogEntry log) throws RepException {
-        if (log == null || log.getDateTime() == null || log.getChangeType() == null || log.getRecordKey() == null) {
+    @Override
+    public boolean addLog(String dateTime, ChangeType changeType, String recordKey) throws RepException {
+        if (dateTime == null || changeType == null || recordKey == null) {
             throw new RepException("ERROR: Missing log attributes");
         }
         synchronized (logs) {
-            logs.add(log);
+            logs.add(new LogEntry(dateTime, changeType, recordKey));
         }
         return true;
     }
 
     @Override
-    public List<LogEntry> getChangeLogs(String fromDate, String toDate, String changeType) throws RepException {
+    public String getChangeLogs(String fromDate, String toDate, String changeType) throws RepException {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
@@ -62,12 +62,14 @@ public class LogManagerImplementation implements LogManagerInterface {
             throw new RepException("ERROR: Cannot accept null dates");
         }
         List<LogEntry> toReturn = new ArrayList<>();
+        LocalDateTime entryDateTime;
         for (LogEntry entry: logs) {
-            if (entry.getDateTime().isAfter(fromDateTime) && entry.getDateTime().isBefore(toDateTime)) {
+            entryDateTime = LocalDateTime.parse(entry.getDateTime());
+            if (entryDateTime.isAfter(fromDateTime) && entryDateTime.isBefore(toDateTime)) {
                 toReturn.add(entry);
             }
         }
-        return toReturn;
+        return toReturn.toString();
     }
 
     @Override

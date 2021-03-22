@@ -29,7 +29,7 @@ public class AlbumRESTJSON {
                 return new Album("", "ERROR", "Album already in database", -1, "", "");
             }
             albumManager.createAlbum(album);
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.CREATE, album.getIsrc());
             return album;
         } catch(RepException re) {
             return new Album("", "ERROR", re.getMessage(), -1, "", "");
@@ -47,7 +47,7 @@ public class AlbumRESTJSON {
                 return new Album("", "ERROR", "Album not in database", -1, "", "");
             }
             albumManager.updateAlbum(album);
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.UPDATE, album.getIsrc());
             return album;
         } catch(RepException re) {
             return new Album("", "ERROR", re.getMessage(), -1, "", "");
@@ -62,7 +62,7 @@ public class AlbumRESTJSON {
     public Album deleteAlbum(@PathParam("isrc") String isrc) {
         try {
             albumManager.deleteAlbum(isrc);
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
+            logManager.addLog(LocalDateTime.now().toString(), ChangeType.DELETE, isrc);
             return new Album("", "STATUS", "Album Deleted", 1, "", "");
         } catch (RepException re) {
             return new Album("", "ERROR", re.getMessage(), -1, "", "");
@@ -99,23 +99,20 @@ public class AlbumRESTJSON {
         }
     }
 
-//
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
-//        System.out.println("Change Logs");
-//        return  getChangeLogs(fromDate,toDate, changeType);
-//    }
-//
-//
-//
-//    @Override
-//    public void clearLogs() throws RepException {
-//        try {
-//            logManager.clearLogs();
-//            System.out.println("Logs cleared");
-//        } catch(com.spicecrispies.core.exceptions.RepException e) {
-//            throw new RepException(e.getMessage());
-//        }
-//    }
+
+    @GET
+    @Path("logs/{fromDate}/{toDate}/{changeType}")
+    public String getChangeLogs(@PathParam("fromDate") String fromDate,@PathParam("toDate") String toDate,@PathParam("changeType") String changeType) throws RepException {
+        System.out.println("Change Logs");
+        return logManager.getChangeLogs(fromDate,toDate, changeType);
+    }
+
+    public void clearLogs() throws RepException {
+        try {
+            logManager.clearLogs();
+            System.out.println("Logs cleared");
+        } catch(com.spicecrispies.core.exceptions.RepException e) {
+            throw new RepException(e.getMessage());
+        }
+    }
 }
