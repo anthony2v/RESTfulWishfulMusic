@@ -25,8 +25,9 @@ public class AlbumRESTJSON implements AlbumInterface {
     private AlbumImplementation albumCover;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
     public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover){
         try {
             albumManager.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
@@ -48,8 +49,9 @@ public class AlbumRESTJSON implements AlbumInterface {
 
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    //@Consumes(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         try {
 
@@ -150,7 +152,8 @@ public class AlbumRESTJSON implements AlbumInterface {
         }
     }
 
-    @Override
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
         System.out.println("Change Logs");
         return  getChangeLogs(fromDate,toDate, changeType);

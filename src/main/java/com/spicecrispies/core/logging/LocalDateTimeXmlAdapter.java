@@ -8,15 +8,14 @@ import java.time.format.DateTimeFormatter;
 public class LocalDateTimeXmlAdapter extends XmlAdapter<String, LocalDateTime> {
 
     public String marshal(LocalDateTime value) throws Exception {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return value.format(formatter);
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return value.toString();
 
     }
 
-
     public LocalDateTime unmarshal(String value) throws Exception {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return LocalDateTime.parse(value, formatter);
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(value);
 
     }
 
