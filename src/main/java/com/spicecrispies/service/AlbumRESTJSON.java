@@ -25,8 +25,7 @@ public class AlbumRESTJSON implements AlbumInterface {
     private AlbumImplementation albumCover;
 
     @POST
-    //@Consumes("application/json")
-    //@Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover){
         try {
@@ -49,9 +48,8 @@ public class AlbumRESTJSON implements AlbumInterface {
 
 
     @PUT
-    //@Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   // @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
         try {
 
@@ -117,6 +115,7 @@ public class AlbumRESTJSON implements AlbumInterface {
 
 
     @Override
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
 
