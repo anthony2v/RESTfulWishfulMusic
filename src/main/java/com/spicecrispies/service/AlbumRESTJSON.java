@@ -1,26 +1,22 @@
 package com.spicecrispies.service;
 
 import com.spicecrispies.core.entities.Album;
-import com.spicecrispies.core.entities.AlbumCover;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.interfaces.AlbumInterface;
-import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.repository.AlbumFactory;
-import com.spicecrispies.repository.AlbumImplementation;
+import com.spicecrispies.repository.AlbumRepoImplementation;
 import com.spicecrispies.repository.LogManagerFactory;
 import com.spicecrispies.repository.LogManagerImplementation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
 @Path("album")
 public class AlbumRESTJSON {
-    private static final AlbumImplementation albumManager = (AlbumImplementation)AlbumFactory.getInstance();
+    private static final AlbumRepoImplementation albumManager = (AlbumRepoImplementation)AlbumFactory.getInstance();
     private static final LogManagerImplementation logManager = (LogManagerImplementation)LogManagerFactory.getInstance();
 
     @POST
@@ -31,7 +27,7 @@ public class AlbumRESTJSON {
             System.out.println("CREATING ALBUM");
             albumManager.createAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtistFirstName(), album.getArtistLastName());
             System.out.println("CREATED ALBUM");
-            if (albumManager.getAlbumInfo(album.getIsrc()).isEmpty())
+            if (albumManager.getAlbumInfo(album.getIsrc()) != null)
             {
                 return "Failed to create album";
             }
@@ -83,24 +79,21 @@ public class AlbumRESTJSON {
 //        }
 //    }
 //
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("{isrc}")
-//    public String getAlbumInfo(@PathParam("isrc") String isrc) {
-//        try {
-//            String album = albumManager.getAlbumInfo(isrc);
-//
-//            if (album == null){
-//                return "No album with an ISRC of " + isrc; }
-//            else
-//            {
-//                return "Album Info" + album;
-//            }
-//
-//        } catch(Exception e) {
-//            return "An error occurred while trying to get the album";
-//        }
-//    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{isrc}")
+    public Album getAlbumInfo(@PathParam("isrc") String isrc) {
+        try {
+            Album album = albumManager.getAlbumInfo(isrc);
+            if (album == null){
+                return new Album("", "", "No album by that ISRC found", -1, "", "");
+            } else {
+                return album;
+            }
+        } catch(RepException re) {
+            return new Album("", "ERROR", "An error occurred while trying to get the album", -1, "", "");
+        }
+    }
 //
 //    @GET
 //    @Produces(MediaType.APPLICATION_JSON)

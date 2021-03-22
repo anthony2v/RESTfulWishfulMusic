@@ -1,18 +1,18 @@
 package com.spicecrispies.repository;
 
 
-import com.spicecrispies.core.interfaces.AlbumInterface;
+import com.spicecrispies.core.interfaces.AlbumRepoInterface;
 
 public class AlbumFactory {
 
-    private static AlbumInterface albumInterface;
+    private static AlbumRepoInterface albumRepoInterface;
 
     private AlbumFactory(){}
 
-    public static synchronized AlbumInterface getInstance(){
-        if(albumInterface == null){
-            albumInterface = new AlbumImplementation();
+    public static synchronized AlbumRepoInterface getInstance(){
+        if(albumRepoInterface == null){
+            albumRepoInterface = new AlbumRepoImplementation();
         }
-        return albumInterface;
+        return albumRepoInterface;
     }
 }

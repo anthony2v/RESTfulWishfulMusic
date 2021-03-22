@@ -1,22 +1,17 @@
 package com.spicecrispies.client;
 
-import com.spicecrispies.core.entities.AlbumCover;
-import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.interfaces.AlbumInterface;
 import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Scanner;
 
-public class RestClient implements AlbumInterface {
+public class RestClient {
     /**
      * Shows the list of albums by sorted by ISRC and title
      * @return list of albums
      */
-    @Override
     public String listAlbums() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet("http://localhost:8080/RESTfulMusic/album");
@@ -32,7 +27,6 @@ public class RestClient implements AlbumInterface {
      * Returns the full album information by ISRC
      * @return full album info
      */
-    @Override
     public String getAlbumInfo(String isrc) throws RepException {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
@@ -48,7 +42,6 @@ public class RestClient implements AlbumInterface {
      * Adds a new album to the collection
      * @return status of the addition
      */
-    @Override
     public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         //public String createAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -62,7 +55,6 @@ public class RestClient implements AlbumInterface {
         }
     }
 
-    @Override
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         //public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -76,7 +68,6 @@ public class RestClient implements AlbumInterface {
         }
     }
 
-    @Override
     public String deleteAlbum(String isrc) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpDelete httpDelete = new HttpDelete(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));

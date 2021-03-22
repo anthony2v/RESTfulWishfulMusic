@@ -1,24 +1,17 @@
 package com.spicecrispies.repository;
 
 import com.spicecrispies.core.entities.Album;
-import com.spicecrispies.core.entities.AlbumCover;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.interfaces.AlbumInterface;
+import com.spicecrispies.core.interfaces.AlbumRepoInterface;
 import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.persistence.AlbumMapper;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class AlbumImplementation implements AlbumInterface, Serializable {
+public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
     private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
     //TODO: This will be stored in the database through data layer
@@ -32,7 +25,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
         getLock();
 
-        if (getAlbumInfo(isrc).equalsIgnoreCase("")) {
+        if (getAlbumInfo(isrc) == null) {
            // albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
             AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName));
 
@@ -87,11 +80,8 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     }
 
     @Override
-    public String getAlbumInfo(String isrc) throws RepException {
-        Album album = AlbumMapper.select(isrc);
-        if (album == null)
-            return "";
-        return album.toString();
+    public Album getAlbumInfo(String isrc) throws RepException {
+        return AlbumMapper.select(isrc);
     }
 
     @Override

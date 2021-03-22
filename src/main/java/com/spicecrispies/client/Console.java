@@ -53,7 +53,6 @@ public class Console {
         System.out.println("createAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
         System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
         System.out.println("deleteAlbum [ISRC]");
-
         System.out.println("quit");
     }
 
