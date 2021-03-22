@@ -71,7 +71,7 @@ public class Console {
                 case ("getAlbumInfo"):
                     System.out.print(albumClient.getAlbumInfo(commandProcessor.nextToken()));
                     break;
-                case ("addAlbum"):
+                case ("createAlbum"):
                     System.out.print(albumClient.createAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
                             commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
                             commandProcessor.nextToken(),commandProcessor.nextToken()));

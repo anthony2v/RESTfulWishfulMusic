@@ -149,7 +149,7 @@ public class AlbumMapper {
             logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, WHERE isrc = ?");
+            statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ? WHERE isrc = ?");
             statement.setString(1, album.getTitle());
             statement.setString(2, album.getDescription());
             statement.setInt(3, album.getReleaseYear());

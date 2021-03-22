@@ -40,27 +40,12 @@ public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable
     }
 
     @Override
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
-        String response = "Album not updated. Verify that it has been added.";
+    public Album updateAlbum(Album album) throws RepException {
         getLock();
-        /*for (Album album : albums) {
-            if (album.getIsrc().equalsIgnoreCase(isrc)) {
-                album.setTitle(title);
-                album.setDescription(description);
-                album.setReleaseYear(releaseYear);
-                album.setArtistFirstName(artistFirstName);
-                album.setArtistLastName(artistLastName);
-                album.setAlbumCover(albumCover);
-                response = "Album updated successfully";
-                break;
-            }
-        }*/
-
-        AlbumMapper.update(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName));
-
+        AlbumMapper.update(album);
         releaseLock();
-        addLogEntry(isrc, ChangeType.UPDATE);
-        return response;
+        addLogEntry(album.getIsrc(), ChangeType.UPDATE);
+        return album;
     }
 
     @Override

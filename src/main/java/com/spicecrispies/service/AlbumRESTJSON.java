@@ -23,41 +23,39 @@ public class AlbumRESTJSON {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String createAlbum(Album album){
+    public Album createAlbum(Album album){
         try {
-            albumManager.createAlbum(album);
-            if (albumManager.getAlbumInfo(album.getIsrc()) != null)
-            {
-                return "Failed to create album";
+            if (albumManager.getAlbumInfo(album.getIsrc()) != null) {
+                return new Album("", "ERROR", "Album already in database", -1, "", "");
             }
+            albumManager.createAlbum(album);
             logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
-            return "CREATING ALBUM SUCCESS!";
+            return album;
         } catch(RepException re) {
-            return re.getMessage();
+            return new Album("", "ERROR", re.getMessage(), -1, "", "");
         } catch(Exception e) {
-            return "ERROR in creating album";
+            return new Album("", "ERROR", "Error occurred while creating album", -1, "", "");
         }
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Album updateAlbum(Album album) throws RepException {
+        try {
+            if (albumManager.getAlbumInfo(album.getIsrc()) == null) {
+                return new Album("", "ERROR", "Album not in database", -1, "", "");
+            }
+            albumManager.updateAlbum(album);
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
+            return album;
+        } catch(RepException re) {
+            return new Album("", "ERROR", re.getMessage(), -1, "", "");
+        } catch(Exception e) {
+            return new Album("", "ERROR", "An error occurred when trying to update the album", -1, "", "");
+        }
+    }
 
-//    @PUT
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
-//        try {
-//
-//            albumManager.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName);
-//
-//            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
-//
-//            return "UPDATE SUCCESS!!";
-//        } catch(RepException re) {
-//            return re.getMessage();
-//        } catch(Exception e) {
-//            return "ERROR in updating the album!";
-//        }
-//    }
-//
 //    @DELETE
 //    @Produces(MediaType.APPLICATION_JSON)
 //    @Path("{isrc}")

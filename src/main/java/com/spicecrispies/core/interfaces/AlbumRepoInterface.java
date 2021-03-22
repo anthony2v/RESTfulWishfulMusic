@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public interface AlbumRepoInterface {
 
     String createAlbum(Album album) throws RepException;
-    String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException;
+    Album updateAlbum(Album album) throws RepException;
     String deleteAlbum(String isrc) throws RepException;
     Album getAlbumInfo(String isrc) throws RepException;
     //Albums are sorted alphabetically by title.

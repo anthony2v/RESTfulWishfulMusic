@@ -1,10 +1,17 @@
 package com.spicecrispies.client;
 
 import com.spicecrispies.core.exceptions.RepException;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RestClient {
@@ -45,26 +52,43 @@ public class RestClient {
     public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         //public String createAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s",
-                    isrc, title, description, releaseYear, artistFirstName, artistLastName));
+            HttpPost httpPost = new HttpPost("http://localhost:8080/RESTfulMusic/album");
+            JSONObject jsonPostData = new JSONObject();
+            jsonPostData.put("isrc", isrc);
+            jsonPostData.put("title", title);
+            jsonPostData.put("description", description);
+            jsonPostData.put("releaseYear", "" + releaseYear);
+            jsonPostData.put("artistFirstName", artistFirstName);
+            jsonPostData.put("artistLastName", artistLastName);
+            StringEntity entity = new StringEntity(jsonPostData.toJSONString());
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
             CloseableHttpResponse httpResponse = client.execute(httpPost);
             return readResponse(httpResponse);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to add customer";
+            return "Failed to create album";
         }
     }
 
     public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
-        //public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s",
-                    isrc, title, description, releaseYear,  artistFirstName, artistLastName));
+            HttpPut httpPut = new HttpPut("http://localhost:8080/RESTfulMusic/album");
+            JSONObject jsonPutData = new JSONObject();
+            jsonPutData.put("isrc", isrc);
+            jsonPutData.put("title", title);
+            jsonPutData.put("description", description);
+            jsonPutData.put("releaseYear", "" + releaseYear);
+            jsonPutData.put("artistFirstName", artistFirstName);
+            jsonPutData.put("artistLastName", artistLastName);
+            StringEntity entity = new StringEntity(jsonPutData.toJSONString());
+            entity.setContentType("application/json");
+            httpPut.setEntity(entity);
             CloseableHttpResponse httpResponse = client.execute(httpPut);
             return readResponse(httpResponse);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to update customer";
+            return "Failed to update album";
         }
     }
 
