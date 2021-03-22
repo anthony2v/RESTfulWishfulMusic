@@ -7,16 +7,14 @@ public class Album {
     private int releaseYear;
     private String artistFirstName;
     private String artistLastName;
-    private AlbumCover albumCover;
 
-    public Album(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) {
+    public Album(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
         this.isrc = isrc;
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.artistFirstName = artistFirstName;
         this.artistLastName = artistLastName;
-        this.albumCover = albumCover;
     }
 
     // Copy constructor
@@ -77,16 +75,7 @@ public class Album {
         this.artistLastName = artistLastName;
     }
 
-    public AlbumCover getAlbumCover() {
-        return albumCover;
-    }
-
-    public void setAlbumCover(AlbumCover albumCover) {
-        this.albumCover = albumCover;
-    }
-
     public String toString(){
-        String description = this.description;
         if ((description == null) || description.isEmpty())
         {
             description = "No description at ths moment";

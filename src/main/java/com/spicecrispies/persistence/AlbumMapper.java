@@ -1,7 +1,6 @@
 package com.spicecrispies.persistence;
 
 import com.spicecrispies.core.entities.Album;
-import com.spicecrispies.core.entities.AlbumCover;
 import com.spicecrispies.core.enums.ChangeType;
 import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
@@ -37,11 +36,7 @@ public class AlbumMapper {
                         resultSet.getString("content_description"),
                         resultSet.getInt("year"),
                         resultSet.getString("artist_first_name"),
-                        resultSet.getString("artist_last_name"),
-                        new AlbumCover(
-                                resultSet.getBytes("cover_image"),
-                                resultSet.getString("cover_image_type")
-                        )
+                        resultSet.getString("artist_last_name")
                 );
             }
             resultSet.close();
@@ -76,7 +71,7 @@ public class AlbumMapper {
             statement = connection.createStatement();
             String sql = "SELECT * FROM album";
             ResultSet resultSet = statement.executeQuery(sql);
-            Album album = null;
+            Album album;
             while (resultSet.next()) {
                 album = new Album(
                         resultSet.getString("isrc"),
@@ -84,11 +79,7 @@ public class AlbumMapper {
                         resultSet.getString("content_description"),
                         resultSet.getInt("year"),
                         resultSet.getString("artist_first_name"),
-                        resultSet.getString("artist_last_name"),
-                        new AlbumCover(
-                                resultSet.getBytes("cover_image"),
-                                resultSet.getString("cover_image_type")
-                        )
+                        resultSet.getString("artist_last_name")
                 );
                 albums.add(album);
             }
@@ -121,15 +112,13 @@ public class AlbumMapper {
             logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.prepareStatement("INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name, cover_image, cover_image_type) VALUES (?,?,?,?,?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO album(isrc, title, content_description, year, artist_first_name, artist_last_name) VALUES (?,?,?,?,?,?)");
             statement.setString(1, album.getIsrc());
             statement.setString(2, album.getTitle());
             statement.setString(3, album.getDescription());
             statement.setInt(4, album.getReleaseYear());
             statement.setString(5, album.getArtistFirstName());
             statement.setString(6, album.getArtistLastName());
-            statement.setBytes(7, album.getAlbumCover().getAlbumCoverImage());
-            statement.setString(8, album.getAlbumCover().getMimeType());
             statement.execute();
             statement.close();
             connection.close();
@@ -161,15 +150,13 @@ public class AlbumMapper {
             logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, album.getIsrc()));
             Class.forName(DRIVER);
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, cover_image = ?, cover_image_type = ? WHERE isrc = ?");
+            statement = connection.prepareStatement("UPDATE album SET title = ?, content_description = ?, year = ?, artist_first_name = ?, artist_last_name = ?, WHERE isrc = ?");
             statement.setString(1, album.getTitle());
             statement.setString(2, album.getDescription());
             statement.setInt(3, album.getReleaseYear());
             statement.setString(4, album.getArtistFirstName());
             statement.setString(5, album.getArtistLastName());
-            statement.setBytes(6, album.getAlbumCover().getAlbumCoverImage());
-            statement.setString(7, album.getAlbumCover().getMimeType());
-            statement.setString(8, album.getIsrc());
+            statement.setString(6, album.getIsrc());
             statement.execute();
             statement.close();
             connection.close();

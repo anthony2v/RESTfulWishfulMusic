@@ -27,14 +27,14 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
 
     @Override
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
+    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         String response = "";
 
         getLock();
 
         if (getAlbumInfo(isrc).equalsIgnoreCase("")) {
            // albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
-            AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
+            AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName));
 
             response = "Album with ISRC " + isrc +" added successfully.";
         } else {
@@ -46,7 +46,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
     }
 
     @Override
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         String response = "Album not updated. Verify that it has been added.";
         getLock();
         /*for (Album album : albums) {
@@ -62,7 +62,7 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
             }
         }*/
 
-        AlbumMapper.update(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
+        AlbumMapper.update(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName));
 
         releaseLock();
         addLogEntry(isrc, ChangeType.UPDATE);
@@ -88,15 +88,10 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
 
     @Override
     public String getAlbumInfo(String isrc) throws RepException {
-      /*  for (Album album : albums) {
-            if (album.getIsrc().equalsIgnoreCase(isrc)) {
-                return album.toString();
-            }
-        }
-
-       */
-       return AlbumMapper.select(isrc).toString();
-
+        Album album = AlbumMapper.select(isrc);
+        if (album == null)
+            return "";
+        return album.toString();
     }
 
     @Override
@@ -116,50 +111,30 @@ public class AlbumImplementation implements AlbumInterface, Serializable {
         return str.toString();
     }
 
-    @Override
-    public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
-        Album album  = AlbumMapper.select(isrc);
-        album.setAlbumCover(albumCover);
-        AlbumMapper.update(album);
-    }
 
-    @Override
-    public void deleteAlbumCoverImage(String isrc) throws RepException {
-        Album album  = AlbumMapper.select(isrc);
-        album.setAlbumCover(new AlbumCover(isrc));
-        AlbumMapper.update(album);
-    }
-
-    @Override
-    public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
-       return AlbumMapper.select(isrc).getAlbumCover();
-    }
-
-
-
-    @Override
-    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
-        LogManagerImplementation logMapper = new LogManagerImplementation();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        List<LogEntry> changeLogs = null;
-        try {
-            changeLogs = logMapper.getChangeLogs(fromDate.format(dateFormatter), toDate.format(dateFormatter), changeType.toString());
-        } catch (RepException ex) {
-            throw new RepException("RepException thrown: " + ex.getMessage());
-        }
-
-        StringBuilder str = new StringBuilder();
-        for (LogEntry entry : changeLogs) {
-            str.append(entry.toString()).append("\n");
-        }
-
-        return str.toString();
-    }
-
-    @Override
-    public void clearLogs() throws RepException {
-        throw new RepException("Method not to be implemented in this assignment.");
-    }
+//    @Override
+//    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
+//        LogManagerImplementation logMapper = new LogManagerImplementation();
+//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        List<LogEntry> changeLogs = null;
+//        try {
+//            changeLogs = logMapper.getChangeLogs(fromDate.format(dateFormatter), toDate.format(dateFormatter), changeType.toString());
+//        } catch (RepException ex) {
+//            throw new RepException("RepException thrown: " + ex.getMessage());
+//        }
+//
+//        StringBuilder str = new StringBuilder();
+//        for (LogEntry entry : changeLogs) {
+//            str.append(entry.toString()).append("\n");
+//        }
+//
+//        return str.toString();
+//    }
+//
+//    @Override
+//    public void clearLogs() throws RepException {
+//        throw new RepException("Method not to be implemented in this assignment.");
+//    }
 
 
     private void addLogEntry(String recordKey, ChangeType changeType) throws RepException{
