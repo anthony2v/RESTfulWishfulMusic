@@ -49,11 +49,11 @@ public class RestClient implements AlbumInterface {
      * @return status of the addition
      */
     @Override
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
+    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         //public String createAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s/%s",
-                    isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
+            HttpPost httpPost = new HttpPost(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s",
+                    isrc, title, description, releaseYear, artistFirstName, artistLastName));
             CloseableHttpResponse httpResponse = client.execute(httpPost);
             return readResponse(httpResponse);
         } catch (IOException e) {
@@ -63,11 +63,11 @@ public class RestClient implements AlbumInterface {
     }
 
     @Override
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
         //public String updateAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s/%s",
-                    isrc, title, description, releaseYear,  artistFirstName, artistLastName, albumCover));
+            HttpPut httpPut = new HttpPut(String.format("http://localhost:8080/RESTfulMusic/album/%s/%s/%s/%d/%s/%s/%s",
+                    isrc, title, description, releaseYear,  artistFirstName, artistLastName));
             CloseableHttpResponse httpResponse = client.execute(httpPut);
             return readResponse(httpResponse);
         } catch (IOException e) {
@@ -86,31 +86,6 @@ public class RestClient implements AlbumInterface {
             e.printStackTrace();
             return "Failed to delete customer";
         }
-    }
-
-    @Override
-    public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
-
-    }
-
-    @Override
-    public void deleteAlbumCoverImage(String isrc) throws RepException {
-
-    }
-
-    @Override
-    public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
-        return null;
-    }
-
-    @Override
-    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
-        return null;
-    }
-
-    @Override
-    public void clearLogs() throws RepException {
-
     }
 
 
