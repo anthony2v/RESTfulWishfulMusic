@@ -9,6 +9,7 @@ import com.spicecrispies.persistence.AlbumMapper;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable {
@@ -20,21 +21,21 @@ public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable
 
 
     @Override
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
+    public String createAlbum(Album album) throws RepException {
         String response = "";
 
         getLock();
 
-        if (getAlbumInfo(isrc) == null) {
+        if (getAlbumInfo(album.getIsrc()) == null) {
            // albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
-            AlbumMapper.insert(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName));
+            AlbumMapper.insert(new Album(album));
 
-            response = "Album with ISRC " + isrc +" added successfully.";
+            response = "Album with ISRC " + album.getIsrc() +" added successfully.";
         } else {
-            response = "Album with ISRC " + isrc +" already in the system.";
+            response = "Album with ISRC " + album.getIsrc() +" already in the system.";
         }
         releaseLock();
-        addLogEntry(isrc, ChangeType.CREATE);
+        addLogEntry(album.getIsrc(), ChangeType.CREATE);
         return response;
     }
 
@@ -85,20 +86,8 @@ public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable
     }
 
     @Override
-    public String listAlbums() throws RepException {
-        StringBuilder str = new StringBuilder();
-        getLock();
-        /*
-        for (Album album : albums) {
-            str.append(album.toString()).append("\n");
-        }
-         */
-        for (Album album : AlbumMapper.selectAll()) {
-            str.append(album.toString()).append("\n");
-        }
-
-        releaseLock();
-        return str.toString();
+    public ArrayList<Album> listAlbums() throws RepException {
+        return AlbumMapper.selectAll();
     }
 
 

@@ -10,7 +10,6 @@ import com.spicecrispies.repository.LogManagerFactory;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AlbumMapper {
     private static final String DRIVER = AlbumDBConfig.DRIVER;
@@ -19,7 +18,7 @@ public class AlbumMapper {
     private static final String PASSWORD = AlbumDBConfig.PASSWORD;
     private static final LogManagerInterface logManager = LogManagerFactory.getInstance();
 
-    public static Album select(String isrc) {
+    public static Album select(String isrc) throws RepException {
         Album album = null;
         Connection connection = null;
         PreparedStatement statement = null;
@@ -43,11 +42,11 @@ public class AlbumMapper {
             statement.close();
             connection.close();
         } catch (ClassNotFoundException cnfe) {
-            System.out.println("AN ERROR OCCURRED REGISTERING JDBC DRIVER");
             cnfe.printStackTrace();
+            throw new RepException("AN ERROR OCCURRED REGISTERING JDBC DRIVER");
         } catch (SQLException se) {
-            System.out.println("AN ERROR OCCURRED DURING SELECT QUERY EXECUTION");
             se.printStackTrace();
+            throw new RepException("AN ERROR OCCURRED DURING SELECT QUERY EXECUTION");
         }
         finally {
             try {
@@ -61,8 +60,8 @@ public class AlbumMapper {
         }
         return album;
     }
-    public static List<Album> selectAll() {
-        List<Album> albums = new ArrayList<>();
+    public static ArrayList<Album> selectAll() {
+        ArrayList<Album> albums = new ArrayList<>();
         Connection connection = null;
         Statement statement = null;
         try {

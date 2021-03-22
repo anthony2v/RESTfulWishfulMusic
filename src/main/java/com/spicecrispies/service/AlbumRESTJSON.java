@@ -12,6 +12,7 @@ import com.spicecrispies.repository.LogManagerImplementation;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 
 @Path("album")
@@ -24,16 +25,12 @@ public class AlbumRESTJSON {
     @Produces(MediaType.APPLICATION_JSON)
     public String createAlbum(Album album){
         try {
-            System.out.println("CREATING ALBUM");
-            albumManager.createAlbum(album.getIsrc(), album.getTitle(), album.getDescription(), album.getReleaseYear(), album.getArtistFirstName(), album.getArtistLastName());
-            System.out.println("CREATED ALBUM");
+            albumManager.createAlbum(album);
             if (albumManager.getAlbumInfo(album.getIsrc()) != null)
             {
                 return "Failed to create album";
             }
-            System.out.println("LOGGING");
             logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, album.getIsrc()));
-
             return "CREATING ALBUM SUCCESS!";
         } catch(RepException re) {
             return re.getMessage();
@@ -94,17 +91,18 @@ public class AlbumRESTJSON {
             return new Album("", "ERROR", "An error occurred while trying to get the album", -1, "", "");
         }
     }
-//
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public String listAlbums() {
-//        try {
-//            System.out.println(albumManager.listAlbums());
-//            return "LISTING CORRECT";
-//        } catch(Exception e) {
-//            return "ERROR in list of albums";
-//        }
-//    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArrayList<Album> listAlbums() {
+        try {
+            return albumManager.listAlbums();
+        } catch(Exception e) {
+            ArrayList<Album> error = new ArrayList<>();
+            error.add(new Album("", "ERROR", "An error occurred while trying to get the album list", -1, "", ""));
+            return error;
+        }
+    }
 
 //
 //    @GET
