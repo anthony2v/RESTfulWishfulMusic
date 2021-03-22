@@ -56,24 +56,21 @@ public class AlbumRESTJSON {
         }
     }
 
-//    @DELETE
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("{isrc}")
-//    public String deleteAlbum(@PathParam("isrc") String isrc) {
-//        try {
-//            albumManager.deleteAlbum(isrc);
-//
-//            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
-//
-//            return "Album Deleted";
-//        } catch (RepException re) {
-//            return re.getMessage();
-//
-//        } catch (Exception e) {
-//            return "ERROR in trying to delete the album";
-//        }
-//    }
-//
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{isrc}")
+    public Album deleteAlbum(@PathParam("isrc") String isrc) {
+        try {
+            albumManager.deleteAlbum(isrc);
+            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
+            return new Album("", "STATUS", "Album Deleted", 1, "", "");
+        } catch (RepException re) {
+            return new Album("", "ERROR", re.getMessage(), -1, "", "");
+        } catch (Exception e) {
+            return new Album("", "ERROR", "An error occurred when trying to delete the album", -1, "", "");
+        }
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{isrc}")

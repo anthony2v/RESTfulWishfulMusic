@@ -52,13 +52,6 @@ public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable
     public String deleteAlbum(String isrc) throws RepException {
         String response = "Failed deleting album. Please check ISRC.";
         getLock();
-      /*  for (int i = 0; i < albums.size(); i++) {
-            if (albums.get(i).getIsrc().equalsIgnoreCase(isrc)) {
-                albums.remove(i);
-                response = "Album deleted successfully.";
-                break;
-            }
-        }*/
         AlbumMapper.delete(isrc);
         releaseLock();
         addLogEntry(isrc, ChangeType.DELETE);
