@@ -1,11 +1,9 @@
 package com.spicecrispies.repository;
 
-import com.spicecrispies.core.enums.ChangeType;
+import com.spicecrispies.core.enums.QueryType;
 import com.spicecrispies.core.interfaces.LogManagerInterface;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.core.exceptions.RepException;
 
-import javax.jws.WebService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -13,33 +11,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@WebService(endpointInterface = "com.spicecrispies.core.interfaces.LogManagerInterface")
 public class LogManagerImplementation implements LogManagerInterface {
     private static final List<LogEntry> logs = Collections.synchronizedList(new ArrayList<>());
 
     @Override
-    public boolean addLog(String dateTime, ChangeType changeType, String recordKey) throws RepException {
-        if (dateTime == null || changeType == null || recordKey == null) {
-            throw new RepException("ERROR: Missing log attributes");
+    public boolean addLog(String dateTime, QueryType queryType, String recordKey) throws NullPointerException {
+        if (dateTime == null || queryType == null || recordKey == null) {
+            throw new NullPointerException("ERROR: Missing log attributes");
         }
         synchronized (logs) {
-            logs.add(new LogEntry(dateTime, changeType, recordKey));
+            logs.add(new LogEntry(dateTime, queryType, recordKey));
         }
         return true;
     }
 
     @Override
-    public String getChangeLogs(String fromDate, String toDate, String changeType) throws RepException {
+    public String getChangeLogs(String fromDate, String toDate, String queryType) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime fromDateTime = null;
         LocalDateTime toDateTime = null;
-        ChangeType type = null;
-        if (!changeType.equals("")) {
-            if (changeType.equals("CREATE") || changeType.equals("UPDATE") || changeType.equals("DELETE")) {
-                type = ChangeType.valueOf(changeType);
+        QueryType type = null;
+        if (!queryType.equals("")) {
+            if (queryType.equals("CREATE") || queryType.equals("UPDATE") || queryType.equals("DELETE")) {
+                type = QueryType.valueOf(queryType);
             }
             else {
-                throw new RepException("Only valid ChangeType(CREATE, UPDATE, DELETE) accepted !!");
+                //throw new Exception("Only valid ChangeType(CREATE, UPDATE, DELETE) accepted !!");
             }
         }
         if (fromDate != null && !fromDate.equals("")) {
@@ -47,7 +44,7 @@ public class LogManagerImplementation implements LogManagerInterface {
                 fromDateTime = LocalDateTime.parse(fromDate, dateFormatter);
             }
             catch (DateTimeParseException pe) {
-                throw new RepException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+                //throw new Exception("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
         if (toDate != null && !toDate.equals("")) {
@@ -55,11 +52,11 @@ public class LogManagerImplementation implements LogManagerInterface {
                 toDateTime = LocalDateTime.parse(toDate, dateFormatter);
             }
             catch (DateTimeParseException pe) {
-                throw new RepException("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
+                //throw new Exception("ERROR: Date format should be yyyy-MM-dd HH:mm:ss");
             }
         }
         if (fromDateTime == null || toDateTime == null) {
-            throw new RepException("ERROR: Cannot accept null dates");
+            throw new NullPointerException("ERROR: Cannot accept null dates");
         }
         List<LogEntry> toReturn = new ArrayList<>();
         LocalDateTime entryDateTime;
@@ -73,7 +70,7 @@ public class LogManagerImplementation implements LogManagerInterface {
     }
 
     @Override
-    public String clearLogs() throws RepException {
-        throw new RepException("Method not implemented.");
+    public String clearLogs() {
+        return "clearLogs() called";
     }
 }

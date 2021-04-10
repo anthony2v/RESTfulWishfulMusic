@@ -1,7 +1,7 @@
 package com.spicecrispies.core.enums;
 
-public enum ChangeType {
+public enum QueryType {
     CREATE,
-    UPDATE,
-    DELETE
+    DELETE,
+    SELECT
 }

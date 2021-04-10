@@ -1,6 +1,6 @@
 package com.spicecrispies.core.logging;
 
-import com.spicecrispies.core.enums.ChangeType;
+import com.spicecrispies.core.enums.QueryType;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
@@ -16,13 +16,13 @@ public class LogEntry implements Serializable {
     @XmlElement
     private String dateTime;
     @XmlElement
-    private ChangeType changeType;
+    private QueryType queryType;
     @XmlElement
     private String recordKey;
 
-    public LogEntry(String dateTime, ChangeType changeType, String recordKey) {
+    public LogEntry(String dateTime, QueryType queryType, String recordKey) {
         this.dateTime = dateTime;
-        this.changeType = changeType;
+        this.queryType = queryType;
         this.recordKey = recordKey;
     }
 
@@ -34,12 +34,12 @@ public class LogEntry implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public ChangeType getChangeType() {
-        return changeType;
+    public QueryType getChangeType() {
+        return queryType;
     }
 
-    public void setChangeType(ChangeType changeType) {
-        this.changeType = changeType;
+    public void setChangeType(QueryType queryType) {
+        this.queryType = queryType;
     }
 
     public String getRecordKey() {
@@ -51,6 +51,6 @@ public class LogEntry implements Serializable {
     }
 
     public String toString(){
-        return String.format("Date & Time: %s, Change Type: %s, Record Key: %s", dateTime, changeType, recordKey);
+        return String.format("Date & Time: %s, Change Type: %s, Record Key: %s", dateTime, queryType, recordKey);
     }
 }

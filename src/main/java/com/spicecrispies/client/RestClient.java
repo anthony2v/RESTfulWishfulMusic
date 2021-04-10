@@ -1,6 +1,5 @@
 package com.spicecrispies.client;
 
-import com.spicecrispies.core.exceptions.RepException;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,7 +29,7 @@ public class RestClient {
      * Returns the full album information by ISRC
      * @return full album info
      */
-    public String getAlbumInfo(String isrc) throws RepException {
+    public String getAlbumInfo(String isrc) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
             CloseableHttpResponse httpResponse = client.execute(httpGet);
@@ -45,7 +44,7 @@ public class RestClient {
      * Adds a new album to the collection
      * @return status of the addition
      */
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
+    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
         //public String createAlbum(String isrc, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost("http://localhost:8080/RESTfulMusic/album");
@@ -67,7 +66,7 @@ public class RestClient {
         }
     }
 
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) throws RepException {
+    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPut httpPut = new HttpPut("http://localhost:8080/RESTfulMusic/album");
             JSONObject jsonPutData = new JSONObject();

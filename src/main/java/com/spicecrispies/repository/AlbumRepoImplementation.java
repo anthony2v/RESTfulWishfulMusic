@@ -1,111 +1,50 @@
 package com.spicecrispies.repository;
 
 import com.spicecrispies.core.entities.Album;
-import com.spicecrispies.core.enums.ChangeType;
-import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.interfaces.AlbumRepoInterface;
-import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.persistence.AlbumMapper;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class AlbumRepoImplementation implements AlbumRepoInterface, Serializable {
     private static final int MAX_AVAILABLE = 1;
     private static final Semaphore sema = new Semaphore(MAX_AVAILABLE, true);
-    //TODO: This will be stored in the database through data layer
-    //private static final ArrayList<Album> albums = new ArrayList<>();
-    //private static final ArrayList<LogEntry> logs = new ArrayList<>();
-
 
     @Override
-    public String createAlbum(Album album) throws RepException {
-        String response = "";
-
+    public boolean createAlbum(Album album) throws ClassNotFoundException, InterruptedException, SQLException {
+        if (getAlbumInfo(album.getIsrc()) != null)
+            return false;
         getLock();
-
-        if (getAlbumInfo(album.getIsrc()) == null) {
-           // albums.add(new Album(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover));
-            AlbumMapper.insert(new Album(album));
-
-            response = "Album with ISRC " + album.getIsrc() +" added successfully.";
-        } else {
-            response = "Album with ISRC " + album.getIsrc() +" already in the system.";
-        }
+        AlbumMapper.insert(new Album(album));
         releaseLock();
-        addLogEntry(album.getIsrc(), ChangeType.CREATE);
-        return response;
+        return true;
     }
 
     @Override
-    public Album updateAlbum(Album album) throws RepException {
-        getLock();
-        AlbumMapper.update(album);
-        releaseLock();
-        addLogEntry(album.getIsrc(), ChangeType.UPDATE);
-        return album;
-    }
-
-    @Override
-    public String deleteAlbum(String isrc) throws RepException {
-        String response = "Failed deleting album. Please check ISRC.";
+    public boolean deleteAlbum(String isrc) throws ClassNotFoundException, InterruptedException, SQLException {
+        if (getAlbumInfo(isrc) == null)
+            return false;
         getLock();
         AlbumMapper.delete(isrc);
         releaseLock();
-        addLogEntry(isrc, ChangeType.DELETE);
-        return response;
+        return true;
     }
 
     @Override
-    public Album getAlbumInfo(String isrc) throws RepException {
+    public Album getAlbumInfo(String isrc) throws ClassNotFoundException, SQLException {
         return AlbumMapper.select(isrc);
     }
 
     @Override
-    public ArrayList<Album> listAlbums() throws RepException {
+    public ArrayList<Album> listAlbums() throws ClassNotFoundException, SQLException {
         return AlbumMapper.selectAll();
     }
 
-
-//    @Override
-//    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
-//        LogManagerImplementation logMapper = new LogManagerImplementation();
-//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        List<LogEntry> changeLogs = null;
-//        try {
-//            changeLogs = logMapper.getChangeLogs(fromDate.format(dateFormatter), toDate.format(dateFormatter), changeType.toString());
-//        } catch (RepException ex) {
-//            throw new RepException("RepException thrown: " + ex.getMessage());
-//        }
-//
-//        StringBuilder str = new StringBuilder();
-//        for (LogEntry entry : changeLogs) {
-//            str.append(entry.toString()).append("\n");
-//        }
-//
-//        return str.toString();
-//    }
-//
-//    @Override
-//    public void clearLogs() throws RepException {
-//        throw new RepException("Method not to be implemented in this assignment.");
-//    }
-
-
-    private void addLogEntry(String recordKey, ChangeType changeType) throws RepException{
-        //logs.add(new LogEntry(LocalDateTime.now(), changeType, recordKey));
-        LogManagerImplementation logMapper = new LogManagerImplementation();
-        logMapper.addLog(LocalDateTime.now().toString(),changeType,recordKey);
-    }
-
-    private void getLock() throws RepException{
-        try {
-            sema.acquire();
-        } catch (InterruptedException ex) {
-            throw new RepException("InterruptedException raised: \r\n" + ex.toString());
-        }
+    private void getLock() throws InterruptedException {
+        sema.acquire();
     }
 
     private void releaseLock(){

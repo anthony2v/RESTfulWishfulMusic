@@ -1,10 +1,5 @@
 package com.spicecrispies.client;
 
-import com.spicecrispies.core.entities.AlbumCover;
-import com.spicecrispies.core.enums.ChangeType;
-import com.spicecrispies.core.exceptions.RepException;
-
-import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -89,7 +84,7 @@ public class Console {
                     break;
             }
         }
-        catch (NoSuchElementException | RepException e) {
+        catch (NoSuchElementException e) {
             System.out.println("Too few arguments. Please try again.");
         }
     }
