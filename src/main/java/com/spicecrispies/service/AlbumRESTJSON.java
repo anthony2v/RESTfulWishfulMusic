@@ -1,170 +1,118 @@
 package com.spicecrispies.service;
 
 import com.spicecrispies.core.entities.Album;
-import com.spicecrispies.core.entities.AlbumCover;
-import com.spicecrispies.core.enums.ChangeType;
-import com.spicecrispies.core.exceptions.RepException;
-import com.spicecrispies.core.interfaces.AlbumInterface;
-import com.spicecrispies.core.interfaces.LogManagerInterface;
-import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.repository.AlbumFactory;
-import com.spicecrispies.repository.AlbumImplementation;
+import com.spicecrispies.core.enums.QueryType;
+import com.spicecrispies.repository.AlbumRepoFactory;
+import com.spicecrispies.repository.AlbumRepoImplementation;
 import com.spicecrispies.repository.LogManagerFactory;
 import com.spicecrispies.repository.LogManagerImplementation;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
+import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Path("album")
-public class AlbumRESTJSON implements AlbumInterface {
-    private AlbumInterface albumManager = (AlbumImplementation) AlbumFactory.getInstance();
-    private LogManagerInterface logManager = (LogManagerImplementation) LogManagerFactory.getInstance();
-    private AlbumImplementation albumCover;
+public class AlbumRESTJSON {
+    private static final AlbumRepoImplementation albumManager = (AlbumRepoImplementation)AlbumRepoFactory.getInstance();
+    private static final LogManagerImplementation logManager = (LogManagerImplementation)LogManagerFactory.getInstance();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover){
+    public Response createAlbum(Album album) {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getIsrc());
         try {
-            albumManager.createAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
-
-            if (albumManager.getAlbumInfo(isrc).isEmpty())
-            {
-                return "Failed to create album";
-            }
-
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.CREATE, isrc));
-
-            return "CREATING ALBUM SUCCESS!";
-        } catch(RepException re) {
-            return re.getMessage();
-        } catch(Exception e) {
-            return "ERROR in creating album";
-        }
-    }
-
-
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName, AlbumCover albumCover) throws RepException {
-        try {
-
-            albumManager.updateAlbum(isrc, title, description, releaseYear, artistFirstName, artistLastName, albumCover);
-
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.UPDATE, isrc));
-
-            return "UPDATE SUCCESS!!";
-        } catch(RepException re) {
-            return re.getMessage();
-        } catch(Exception e) {
-            return "ERROR in updating the album!";
-        }
-    }
-
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{isrc}")
-    public String deleteAlbum(@PathParam("isrc") String isrc) {
-        try {
-            albumManager.deleteAlbum(isrc);
-
-            logManager.addLog(new LogEntry(LocalDateTime.now(), ChangeType.DELETE, isrc));
-
-            return "Album Deleted";
-        } catch (RepException re) {
-            return re.getMessage();
-
-        } catch (Exception e) {
-            return "ERROR in trying to delete the album";
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{isrc}")
-    public String getAlbumInfo(@PathParam("isrc") String isrc) {
-        try {
-            String album = albumManager.getAlbumInfo(isrc);
-
-            if (album == null){
-                return "No album with an ISRC of " + isrc; }
+            if (albumManager.createAlbum(album))
+                return Response.status(Response.Status.OK).entity("Album successfully added to wishlist!").build();
             else
-            {
-                return "Album Info" + album;
-            }
+                return Response.status(Response.Status.CONFLICT).entity("Album already in wishlist!").build();
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (InterruptedException interruptedException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An interrupt error occurred when trying to acquire lock.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during select query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to create the album.").build();
+        }
+    }
 
-        } catch(Exception e) {
-            return "An error occurred while trying to get the album";
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{isrc}")
+    public Response deleteAlbum(@PathParam("isrc") String isrc) {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, isrc);
+        try {
+            if (albumManager.deleteAlbum(isrc))
+                return Response.status(Response.Status.OK).entity("Album successfully deleted from wishlist!").build();
+            else
+                return Response.status(Response.Status.CONFLICT).entity("Album not found and deleted, please verify ISRC!").build();
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (InterruptedException interruptedException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An interrupt error occurred when trying to acquire lock.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during delete query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to delete the album.").build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String listAlbums() {
-        try {
-            System.out.println(albumManager.listAlbums());
-            return "LISTING CORRECT";
-        } catch(Exception e) {
-            return "ERROR in list of albums";
-        }
-    }
-
-
-    @Override
-    public void updateAlbumCoverImage(String isrc, AlbumCover albumCover) throws RepException {
-
-        if(albumCover.getAlbumCoverImage() == null ){
-            System.out.println("ALBUM COVER IMAGE UPDATED");
-        }else{
-            System.out.println("UNABLE to update album cover image.");
-        }
-    }
-
-
-    @DELETE
     @Path("{isrc}")
-    public void deleteAlbumCoverImage(@PathParam("isrc") String isrc) throws RepException{
+    public Response getAlbumInfo(@PathParam("isrc") String isrc) {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.SELECT, isrc);
         try {
-            albumCover.deleteAlbumCoverImage(isrc);
-            if(albumCover.getAlbumCoverImage(isrc) == null ){
-                System.out.println("ALBUM COVER IMAGE DELETED");
-            }else{
-                System.out.println("UNABLE to delete album cover image.");
+            Album album = albumManager.getAlbumInfo(isrc);
+            if (album != null)
+                return Response.status(Response.Status.OK).entity(album).build();
+            else
+                return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during select query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to get the album.").build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAlbums() {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.SELECT, "*");
+        try {
+            ArrayList<Album> wishlist = albumManager.listAlbums();
+            if (wishlist.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            } else {
+                GenericEntity<List<Album>> genericEntity = new GenericEntity<List<Album>>(wishlist) {};
+                return Response.status(Response.Status.OK).entity(genericEntity).build();
             }
-        }
-        catch(RepException e) {
-            System.out.println("ERROR IN DELETING album cover image");
-        }
-    }
-
-    @Override
-    public AlbumCover getAlbumCoverImage(String isrc) throws RepException {
-        try {
-            return albumCover.getAlbumCoverImage(isrc);
-        } catch (com.spicecrispies.core.exceptions.RepException e) {
-            throw new RepException(e.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during select query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to get the albums.").build();
         }
     }
 
-    @Override
-    public String getChangeLogs(LocalDate fromDate, LocalDate toDate, ChangeType changeType) throws RepException {
+    @GET
+    @Path("logs/{fromDate}/{toDate}/{queryType}")
+    public String getChangeLogs(@PathParam("fromDate") String fromDate,@PathParam("toDate") String toDate,@PathParam("queryType") String queryType) {
         System.out.println("Change Logs");
-        return  getChangeLogs(fromDate,toDate, changeType);
+        return logManager.getChangeLogs(fromDate, toDate, queryType);
     }
 
-
-
-    @Override
-    public void clearLogs() throws RepException {
-        try {
-            logManager.clearLogs();
-            System.out.println("Logs cleared");
-        } catch(com.spicecrispies.core.exceptions.RepException e) {
-            throw new RepException(e.getMessage());
-        }
+    public void clearLogs() {
+        logManager.clearLogs();
+        System.out.println("Logs cleared");
     }
 }

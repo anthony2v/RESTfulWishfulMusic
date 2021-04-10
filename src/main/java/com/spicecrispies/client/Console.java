@@ -1,4 +1,4 @@
-package com.spicecrispies;
+package com.spicecrispies.client;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
  */
 
 public class Console {
-    private static final WebClient artistClient = new WebClient();
     private static final RestClient albumClient = new RestClient();
 
     public static void main(String[] args) {
@@ -42,16 +41,12 @@ public class Console {
     /**
      * Provides a list of commands and arguments to the user.
      */
+
     public static void help() {
-        System.out.println("listArtists");
-        System.out.println("getArtistDetails [Nickname]");
-        System.out.println("addArtist [Nickname] [First Name] [Last Name] [Bio]");
-        System.out.println("updateArtist [Nickname] [First Name] [Last Name] [Bio]");
-        System.out.println("deleteArtist [Nickname]");
         System.out.println("listAlbums");
-        System.out.println("getAlbumDetails [ISRC]");
-        System.out.println("addAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
-        System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [Artist Nickname]");
+        System.out.println("getAlbumInfo [ISRC]");
+        System.out.println("createAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
+        System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
         System.out.println("deleteAlbum [ISRC]");
         System.out.println("quit");
     }
@@ -65,38 +60,21 @@ public class Console {
         String command = commandProcessor.nextToken();
         try {
             switch (command) {
-                case ("listArtists"):
-                    System.out.print(artistClient.listArtists());
-                    break;
-                case ("getArtistDetails"):
-                    System.out.print(artistClient.getArtistDetails(commandProcessor.nextToken()));
-                    break;
-                case ("addArtist"):
-                    System.out.print(artistClient.addArtist(commandProcessor.nextToken(), commandProcessor.nextToken(),
-                            commandProcessor.nextToken(), commandProcessor.nextToken()));
-                    break;
-                case ("updateArtist"):
-                    System.out.print(artistClient.updateArtist(commandProcessor.nextToken(), commandProcessor.nextToken(),
-                            commandProcessor.nextToken(), commandProcessor.nextToken()));
-                    break;
-                case ("deleteArtist"):
-                    System.out.print(artistClient.deleteArtist(commandProcessor.nextToken()));
-                    break;
                 case ("listAlbums"):
                     System.out.print(albumClient.listAlbums());
                     break;
-                case ("getAlbumDetails"):
-                    System.out.print(albumClient.getAlbumDetails(commandProcessor.nextToken()));
+                case ("getAlbumInfo"):
+                    System.out.print(albumClient.getAlbumInfo(commandProcessor.nextToken()));
                     break;
-                case ("addAlbum"):
-                    System.out.print(albumClient.addAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
+                case ("createAlbum"):
+                    System.out.print(albumClient.createAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
                             commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
-                            commandProcessor.nextToken()));
+                            commandProcessor.nextToken(),commandProcessor.nextToken()));
                     break;
                 case ("updateAlbum"):
                     System.out.print(albumClient.updateAlbum(commandProcessor.nextToken(), commandProcessor.nextToken(),
                             commandProcessor.nextToken(), Integer.parseInt(commandProcessor.nextToken()),
-                            commandProcessor.nextToken()));
+                            commandProcessor.nextToken(),commandProcessor.nextToken()));
                     break;
                 case ("deleteAlbum"):
                     System.out.print(albumClient.deleteAlbum(commandProcessor.nextToken()));

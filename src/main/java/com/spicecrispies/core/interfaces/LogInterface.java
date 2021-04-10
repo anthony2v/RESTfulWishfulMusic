@@ -1,19 +1,10 @@
 package com.spicecrispies.core.interfaces;
 
-import com.spicecrispies.core.exceptions.RepException;
 import com.spicecrispies.core.logging.LogEntry;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import java.util.List;
+import java.util.ArrayList;
 
-@WebService
-@SOAPBinding
 public interface LogInterface {
-    @WebMethod(operationName = "listLog")
-    public List<LogEntry> getChangeLogs(@WebParam(name="from") String fromDate, @WebParam(name="to") String toDate, @WebParam(name="changeType") String changeType) throws RepException;
-    @WebMethod(operationName = "clearLog")
-    public String clearLogs() throws RepException;
+    public ArrayList<LogEntry> getChangeLogs(String fromDate, String toDate, String queryType);
+    public boolean clearLogs();
 }
