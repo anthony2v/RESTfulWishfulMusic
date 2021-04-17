@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public interface AlbumRepoInterface {
     boolean createAlbum(Album album) throws ClassNotFoundException, InterruptedException, SQLException;
-    boolean deleteAlbum(String isrc) throws ClassNotFoundException, InterruptedException, SQLException;
-    Album getAlbumInfo(String isrc) throws ClassNotFoundException, SQLException;
+    boolean deleteAlbum(String id) throws ClassNotFoundException, InterruptedException, SQLException;
+    Album getAlbumInfo(String id) throws ClassNotFoundException, SQLException;
     // Albums are sorted alphabetically by title.
     ArrayList<Album> listAlbums() throws ClassNotFoundException, SQLException;
     //log entries are sorted chronologically by the time-stamp.
