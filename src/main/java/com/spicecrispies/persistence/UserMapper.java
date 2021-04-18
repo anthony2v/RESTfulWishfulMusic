@@ -1,70 +1,67 @@
 package com.spicecrispies.persistence;
 
-import com.spicecrispies.core.entities.Album;
+import com.spicecrispies.core.entities.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class AlbumMapper extends DataMapper {
+public class UserMapper extends DataMapper {
 
-    public static Album select(String id) throws ClassNotFoundException, SQLException {
-        Album album = null;
+    public static User select(String id) throws ClassNotFoundException, SQLException {
+        User user = null;
         Connection connection;
         PreparedStatement statement;
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        statement = connection.prepareStatement("SELECT * FROM album WHERE id = ?");
+        statement = connection.prepareStatement("SELECT * FROM user WHERE id = ?");
         statement.setString(1, id);
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
-            album = new Album(
+            user = new User(
                     id,
-                    resultSet.getString("title"),
-                    resultSet.getInt("year"),
-                    resultSet.getString("artist")
+                    resultSet.getString("name"),
+                    resultSet.getString("password")
             );
         }
         resultSet.close();
         statement.close();
         connection.close();
-        return album;
+        return user;
     }
 
-    public static ArrayList<Album> selectAll() throws ClassNotFoundException, SQLException {
-        ArrayList<Album> albums = new ArrayList<>();
+    public static ArrayList<User> selectAll() throws ClassNotFoundException, SQLException {
+        ArrayList<User> users = new ArrayList<>();
         Connection connection = null;
         Statement statement = null;
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         statement = connection.createStatement();
-        String sql = "SELECT * FROM album";
+        String sql = "SELECT * FROM user";
         ResultSet resultSet = statement.executeQuery(sql);
-        Album album;
+        User user;
         while (resultSet.next()) {
-            album = new Album(
+            user = new User(
                     resultSet.getString("id"),
-                    resultSet.getString("title"),
-                    resultSet.getInt("year"),
-                    resultSet.getString("artist")
+                    resultSet.getString("name"),
+                    resultSet.getString("password")
             );
-            albums.add(album);
+            users.add(user);
         }
         resultSet.close();
         statement.close();
         connection.close();
-        return albums;
+        return users;
     }
 
-    public static void insert(Album album) throws ClassNotFoundException, SQLException {
+    public static void insert(User user) throws ClassNotFoundException, SQLException {
         Connection connection = null;
         PreparedStatement statement = null;
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        statement = connection.prepareStatement("INSERT INTO album(id, title, year, artist) VALUES (?,?,?,?)");
-        statement.setString(1, album.getId());
-        statement.setString(2, album.getTitle());
-        statement.setInt(3, album.getReleaseYear());
-        statement.setString(4, album.getArtist());
+        statement = connection.prepareStatement("INSERT INTO user(id, name, password) VALUES (?,?,?)");
+        statement.setString(1, user.getId());
+        statement.setString(2, user.getName());
+        statement.setString(3, user.getPassword());
         statement.execute();
         statement.close();
         connection.close();
@@ -75,7 +72,7 @@ public class AlbumMapper extends DataMapper {
         PreparedStatement statement = null;
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        statement = connection.prepareStatement("DELETE FROM album WHERE id = ?");
+        statement = connection.prepareStatement("DELETE FROM user WHERE id = ?");
         statement.setString(1, id);
         statement.execute();
         statement.close();

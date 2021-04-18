@@ -1,13 +1,13 @@
 package com.spicecrispies.core.entities;
 
 public class Album {
-    private String isrc;
+    private String id;
     private String title;
     private int releaseYear;
     private String artist;
 
-    public Album(String isrc, String title, int releaseYear, String artist) {
-        this.isrc = isrc;
+    public Album(String id, String title, int releaseYear, String artist) {
+        this.id = id;
         this.title = title;
         this.releaseYear = releaseYear;
         this.artist = artist;
@@ -15,7 +15,7 @@ public class Album {
 
     // Copy constructor
     public Album(Album album) {
-        this.isrc = album.getIsrc();
+        this.id = album.getId();
         this.title = album.getTitle();
         this.releaseYear = album.getReleaseYear();
         this.artist = album.getArtist();
@@ -26,12 +26,12 @@ public class Album {
         // purposefully left empty
     }
 
-    public String getIsrc() {
-        return isrc;
+    public String getId() {
+        return id;
     }
 
-    public void setIsrc(String isrc) {
-        this.isrc = isrc;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -59,6 +59,6 @@ public class Album {
     }
 
     public String toString(){
-        return String.format("ISRC: %s, title: %s, release year: %d, artist: %s", isrc, title, releaseYear, artist);
+        return String.format("ID: %s, title: %s, release year: %d, artist: %s", id, title, releaseYear, artist);
     }
 }

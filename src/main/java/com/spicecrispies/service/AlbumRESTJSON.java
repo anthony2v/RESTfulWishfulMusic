@@ -25,7 +25,7 @@ public class AlbumRESTJSON {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAlbum(Album album) {
-        logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getIsrc());
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getId());
         try {
             if (albumManager.createAlbum(album))
                 return Response.status(Response.Status.OK).entity("Album successfully added to wishlist!").build();
@@ -44,14 +44,14 @@ public class AlbumRESTJSON {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{isrc}")
-    public Response deleteAlbum(@PathParam("isrc") String isrc) {
-        logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, isrc);
+    @Path("{id}")
+    public Response deleteAlbum(@PathParam("id") String id) {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);
         try {
-            if (albumManager.deleteAlbum(isrc))
+            if (albumManager.deleteAlbum(id))
                 return Response.status(Response.Status.OK).entity("Album successfully deleted from wishlist!").build();
             else
-                return Response.status(Response.Status.CONFLICT).entity("Album not found and deleted, please verify ISRC!").build();
+                return Response.status(Response.Status.CONFLICT).entity("Album not found and deleted, please verify ID!").build();
         } catch (ClassNotFoundException classNotFoundException) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
         } catch (InterruptedException interruptedException) {
@@ -65,11 +65,11 @@ public class AlbumRESTJSON {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{isrc}")
-    public Response getAlbumInfo(@PathParam("isrc") String isrc) {
-        logManager.addLog(LocalDateTime.now().toString(), QueryType.SELECT, isrc);
+    @Path("{id}")
+    public Response getAlbumInfo(@PathParam("id") String id) {
+        logManager.addLog(LocalDateTime.now().toString(), QueryType.SELECT, id);
         try {
-            Album album = albumManager.getAlbumInfo(isrc);
+            Album album = albumManager.getAlbumInfo(id);
             if (album != null)
                 return Response.status(Response.Status.OK).entity(album).build();
             else
@@ -98,6 +98,7 @@ public class AlbumRESTJSON {
         } catch (ClassNotFoundException classNotFoundException) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
         } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during select query execution.").build();
         } catch (Exception exception) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to get the albums.").build();

@@ -29,3 +29,4 @@ lib
 
 # Album DB Config
 src/main/java/com/spicecrispies/persistence/AlbumDBConfig.java
+src/main/java/com/spicecrispies/persistence/DataMapper.java

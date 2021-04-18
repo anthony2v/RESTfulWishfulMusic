@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class RestClient {
     /**
-     * Shows the list of albums by sorted by ISRC and title
+     * Shows the list of albums by sorted by ID and title
      * @return list of albums
      */
     public String listAlbums() {
@@ -26,12 +26,12 @@ public class RestClient {
     }
 
     /**
-     * Returns the full album information by ISRC
+     * Returns the full album information by ID
      * @return full album info
      */
-    public String getAlbumInfo(String isrc) {
+    public String getAlbumInfo(String id) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
+            HttpGet httpGet = new HttpGet(String.format("http://localhost:8080/RESTfulMusic/album/%s", id));
             CloseableHttpResponse httpResponse = client.execute(httpGet);
             return readResponse(httpResponse);
         } catch (IOException e) {
@@ -44,12 +44,12 @@ public class RestClient {
      * Adds a new album to the collection
      * @return status of the addition
      */
-    public String createAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
-        //public String createAlbum(String isrc, String title, String description, int releaseYear, String artist) {
+    public String createAlbum(String id, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
+        //public String createAlbum(String id, String title, String description, int releaseYear, String artist) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost("http://localhost:8080/RESTfulMusic/album");
             JSONObject jsonPostData = new JSONObject();
-            jsonPostData.put("isrc", isrc);
+            jsonPostData.put("id", id);
             jsonPostData.put("title", title);
             jsonPostData.put("description", description);
             jsonPostData.put("releaseYear", "" + releaseYear);
@@ -66,11 +66,11 @@ public class RestClient {
         }
     }
 
-    public String updateAlbum(String isrc, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
+    public String updateAlbum(String id, String title, String description, int releaseYear, String artistFirstName, String artistLastName) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPut httpPut = new HttpPut("http://localhost:8080/RESTfulMusic/album");
             JSONObject jsonPutData = new JSONObject();
-            jsonPutData.put("isrc", isrc);
+            jsonPutData.put("id", id);
             jsonPutData.put("title", title);
             jsonPutData.put("description", description);
             jsonPutData.put("releaseYear", "" + releaseYear);
@@ -87,9 +87,9 @@ public class RestClient {
         }
     }
 
-    public String deleteAlbum(String isrc) {
+    public String deleteAlbum(String id) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpDelete httpDelete = new HttpDelete(String.format("http://localhost:8080/RESTfulMusic/album/%s", isrc));
+            HttpDelete httpDelete = new HttpDelete(String.format("http://localhost:8080/RESTfulMusic/album/%s", id));
             CloseableHttpResponse httpResponse = client.execute(httpDelete);
             return readResponse(httpResponse);
         } catch (IOException e) {

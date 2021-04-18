@@ -44,10 +44,10 @@ public class Console {
 
     public static void help() {
         System.out.println("listAlbums");
-        System.out.println("getAlbumInfo [ISRC]");
-        System.out.println("createAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
-        System.out.println("updateAlbum [ISRC] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
-        System.out.println("deleteAlbum [ISRC]");
+        System.out.println("getAlbumInfo [ID]");
+        System.out.println("createAlbum [ID] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
+        System.out.println("updateAlbum [ID] [Title] [Description] [Year] [ArtistFirstName] [ArtistLastName]");
+        System.out.println("deleteAlbum [ID]");
         System.out.println("quit");
     }
 
