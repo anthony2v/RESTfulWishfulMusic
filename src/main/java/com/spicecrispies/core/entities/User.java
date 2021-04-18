@@ -1,10 +1,14 @@
 package com.spicecrispies.core.entities;
 
+import java.security.SecureRandom;
+
 public class User {
 
+    private static final int TOKEN_LENGTH = 20;
     private String id;
     private String name;
     private String password;
+    private String token;
 
     public User() {
         // purposefully left empty
@@ -14,6 +18,7 @@ public class User {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.token = "";
     }
 
     public String getId() { return id; }
@@ -39,4 +44,31 @@ public class User {
     public String toString() {
         return String.format("Username: %s", name);
     }
+
+    public String getToken() { return this.token; }
+
+    public void generateToken(){
+        String number = "0123456789";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String upper = lower.toUpperCase();
+
+        String randomString = lower + upper + number;
+
+        //A stringBuilder is like variable-length array that contain
+        // a sequence of characters that can be changed during invocations
+        StringBuilder sb = new StringBuilder(TOKEN_LENGTH);
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < TOKEN_LENGTH; i++) {
+            // 0-62 (exclusive), random returns 0-61
+            int rndCharAt = random.nextInt(randomString.length());
+            char rndChar = randomString.charAt(rndCharAt);
+            sb.append(rndChar);
+        }
+        this.token = sb.toString();
+    }
+
+    public void destroyToken(){
+        this.token = "";
+    }
+
 }
