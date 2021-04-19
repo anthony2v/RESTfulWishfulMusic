@@ -11,10 +11,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.spicecrispies.service.AlbumDataAggregator;
+import org.json.simple.parser.ParseException;
+
+import static com.spicecrispies.service.AlbumDataAggregator.searchAlbums;
 
 
 @Path("album")
@@ -116,4 +122,24 @@ public class AlbumRESTJSON {
         logManager.clearLogs();
         System.out.println("Logs cleared");
     }
+
+    public void listalbums(){}
+
+    public void getAlbumInfo(){}
+
+    @Path("{album}/{artist}")
+    public void search(@PathParam("album") String album,@PathParam("artist") String artist) throws IOException, ParseException {
+        System.out.println("Album: " + album + " , Artist: ");
+        System.out.println("Result : /n" + searchAlbums(album,artist).toString());
+    }
+
+    public void addWishlist(){}
+
+    public void removeWishlist(){}
+
+    public void getPrice(){}
+
+
+
+
 }
