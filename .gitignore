@@ -27,6 +27,5 @@ out
 target
 lib
 
-# Album DB Config
-src/main/java/com/spicecrispies/persistence/AlbumDBConfig.java
+# Database Config
 src/main/java/com/spicecrispies/persistence/DataMapper.java

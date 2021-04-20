@@ -1,7 +1,5 @@
 package com.spicecrispies.persistence;
 
-import com.spicecrispies.core.entities.Album;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
