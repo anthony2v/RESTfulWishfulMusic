@@ -1,14 +1,13 @@
 package com.spicecrispies.service;
 
+import com.spicecrispies.repository.LoginManager;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import java.io.IOException;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
-
-
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -17,40 +16,40 @@ public class RequestFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        System.out.println("Client Powered By Received from client: "+requestContext.getHeaderString("Client-Powered-By"));
+        System.out.println("Authorization-Token Received from client: "+requestContext.getHeaderString("Authorization-Token"));
         UriInfo uriInfo=requestContext.getUriInfo();
+
         if (uriInfo.getPath().contains("user/register") || uriInfo.getPath().contains("user/login") || uriInfo.getPath().contains("user/logout") ) {
             return ;
         }
-        UserRest.tokenHeader = requestContext.getHeaderString("Authorization_Token");
-        System.out.println("The Token Header in Filter is  "+UserRest.tokenHeader);
-        Date generatedTime=UserRest.tokenExpiration.get(UserRest.tokenHeader);
+        String tokenHeader=  requestContext.getHeaderString("Authorization-Token");
+        System.out.println("token Header in filter: "+ tokenHeader);
+        Date generatedTime= LoginManager.getInstance().generateDate(tokenHeader);
 
 
         if (generatedTime == null) {
             System.out.println("Token in Header is NOT VALID");
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by RequestFilter Class!").build());
-            return ;
-
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by Filter!").build());
+            return;
         }
         else {
-            if (generatedTime != null) {
-                Date timeNow = new Date();
-                long difference = timeNow.getTime() - generatedTime.getTime();
-                long tokenDuration = TimeUnit.MILLISECONDS.toMinutes(difference);
-                System.out.println("Duration: " + tokenDuration);
-
-                if (tokenDuration > 30) {
-                    UserRest.token_name.remove(UserRest.tokenHeader);
-                    UserRest.tokenExpiration.remove(UserRest.tokenHeader);
-                    System.out.println("Session timed out. Try again!");
-                    requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by RequestFilter Class!").build());
-                    return;
-                } else {
-                    System.out.println("Token in Header is VALID");
-                    System.out.println("The Token Header in Filter is  "+ UserRest.tokenHeader + "at time " + generatedTime);
-                    return;
-                }
+            Date timeNow = new Date();
+            long diff = timeNow.getTime() - generatedTime.getTime() ;
+            long tokenDuration = TimeUnit.MILLISECONDS.toMinutes(diff);
+            System.out.println("Duration: " + tokenDuration);
+            if (tokenDuration > 30){
+                LoginManager.getInstance().removeTokenByToken(tokenHeader);
+                System.out.println("Session timed out");
+                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by Filter!").build());
+                return;
+            }
+            else{
+                System.out.println("Token in Header is VALID");
+                return;
             }
         }
+
+
     }
 }

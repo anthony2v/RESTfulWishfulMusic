@@ -2,10 +2,8 @@ package com.spicecrispies.service;
 
 import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.QueryType;
-import com.spicecrispies.repository.AlbumRepoFactory;
-import com.spicecrispies.repository.AlbumRepoImplementation;
-import com.spicecrispies.repository.LogManagerFactory;
-import com.spicecrispies.repository.LogManagerImplementation;
+import com.spicecrispies.persistence.AlbumMapper;
+import com.spicecrispies.repository.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -17,16 +15,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.spicecrispies.service.AlbumDataAggregator;
 import org.json.simple.parser.ParseException;
 
 import static com.spicecrispies.service.AlbumDataAggregator.searchAlbums;
 
 
-@Path("album")
+@Path("/album")
 public class AlbumRESTJSON {
     private static final AlbumRepoImplementation albumManager = (AlbumRepoImplementation)AlbumRepoFactory.getInstance();
     private static final LogManagerImplementation logManager = (LogManagerImplementation)LogManagerFactory.getInstance();
+    private static final AuthenticationREST authentication =  AuthenticationREST.getInstance();
+
+
+    private static Album albums = new Album();
+    private static AlbumMapper albumMapper = new AlbumMapper();
+
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -51,7 +54,7 @@ public class AlbumRESTJSON {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response deleteAlbum(@PathParam("id") String id) {
+    public Response deleteAlbum(@PathParam("id") String id) { //Remove from wishlist
         logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);
         try {
             if (albumManager.deleteAlbum(id))
@@ -123,23 +126,57 @@ public class AlbumRESTJSON {
         System.out.println("Logs cleared");
     }
 
-    public void listalbums(){}
 
-    public void getAlbumInfo(){}
-
-    @Path("{album}/{artist}")
-    public void search(@PathParam("album") String album,@PathParam("artist") String artist) throws IOException, ParseException {
-        System.out.println("Album: " + album + " , Artist: ");
-        System.out.println("Result : /n" + searchAlbums(album,artist).toString());
+    public ArrayList<Album> getAlbumInfo() throws SQLException, ClassNotFoundException {
+        return AlbumMapper.selectAll();
     }
 
-    public void addWishlist(){}
+    @Path("search/{album}/{artist}")
+    public String search(@PathParam("album") String album, @PathParam("artist") String artist) throws IOException, ParseException {
+        System.out.println("Album: " + album + " , Artist: ");
+        System.out.println("Result : /n" );
+        return searchAlbums(album,artist).toString();
+    }
 
-    public void removeWishlist(){}
+    @Path("{userID}/{albumID}")
+    public Response addWishlist(@PathParam("userID") String userID, @PathParam("albumID") String albumID) throws IOException, ParseException, SQLException, ClassNotFoundException {
+        if (userID == null && albumID == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
 
-    public void getPrice(){}
+        if (userID == null && albumID != null) {
+            return Response.status(Response.Status.CONFLICT).entity("Error with USER ID!Please verify USER ID!").build();
+        }
+
+        if (userID != null && albumID == null) {
+            return Response.status(Response.Status.CONFLICT).entity("Error with ALBUM ID!Please verify ALBUM ID!").build();
+        }
 
 
+        albumMapper.insert(albums);
+
+        return Response.status(Response.Status.OK).entity("ADDED to wishlist!!").build();
+    }
+
+    @Path("removeWishlist/{userID}/{albumID}")
+    public Response removeWishlist(@PathParam("userID") String userID, @PathParam("albumID") String albumID) throws IOException, ParseException, SQLException, ClassNotFoundException {
+        if (userID == null && albumID == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        if (userID == null && albumID != null) {
+            return Response.status(Response.Status.CONFLICT).entity("Error with USER ID!Please verify USER ID!").build();
+        }
+
+        if (userID != null && albumID == null) {
+            return Response.status(Response.Status.CONFLICT).entity("Error with ALBUM ID!Please verify ALBUM ID!").build();
+        }
+
+        albumMapper.delete(albumID);
+
+        return Response.status(Response.Status.OK).entity("DELETED from wishlist!!").build();
+
+    }
 
 
 }
