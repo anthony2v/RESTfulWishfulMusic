@@ -1,6 +1,5 @@
 package com.spicecrispies.service;
 
-import com.spicecrispies.core.entities.MyResponse;
 import com.spicecrispies.core.entities.User;
 import com.spicecrispies.persistence.UserMapper;
 
@@ -15,90 +14,95 @@ import java.util.concurrent.TimeUnit;
 
 @Path("/user")
 public class AuthenticationREST {
-
-    private static UserMapper userMapper = new UserMapper();
-    private static ArrayList<User> users = new ArrayList<>();
-    public static Map<String, String> tokenUsername = new HashMap<String, String>();
-    public static Map<String, Date> tokenExpiration = new HashMap<String, Date>();
-    public static String tokenHeader="";
-
+    private static Integer currentId = 0;
+    private static final ArrayList<User> loggedInUsers = new ArrayList<>();
+    private static final Map<String, String> tokenUsername = new HashMap<>();
+    private static final Map<String, Date> tokenExpiration = new HashMap<>();
 
     @POST
-    @Path("/register/{username}/{password}")
-    @Produces("application/json")
-    public String register(@FormParam("id") String id,@FormParam("username") String username, @FormParam("password") String password) throws SQLException, ClassNotFoundException {
-        User user = new User(id,username, password);
-        users.add(user);
-        userMapper.insert(user);
-        return "User Created - : " + username;
+    @Path("/register")
+    public Response register(@FormParam("username") String username, @FormParam("password") String password) {
+        User user = new User(currentId.toString(), username, password);
+        currentId++;
+        try {
+            UserMapper.insert(user);
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during insert query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to register new user: " + username + ".").build();
+        }
+        return Response.status(Response.Status.OK).entity("User Created: " + username).build();
     }
 
 
     @POST
-    @Path("/login/{username}/{password}")
+    @Path("/login")
     @Produces("application/json")
     public Response login(@FormParam("username") String username, @FormParam("password") String password) {
-        User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
-        MyResponse authResponse;
+        User user;
+        try {
+            user = UserMapper.select(username);
+        } catch (ClassNotFoundException classNotFoundException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred registering the JDBC driver.").build();
+        } catch (SQLException sqlException) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred during select query execution.").build();
+        } catch (Exception exception) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred when trying to open session.").build();
+        }
+        boolean success = false;
+        String token = "";
         Response.Status status;
-        if(user != null){
-            if(user.getPassword().equals(password)){
+        if (user != null) {
+            if (user.getPassword().equals(password)) {
                 user.generateToken();
+                loggedInUsers.add(user);
                 tokenUsername.put(user.getToken(), username);
                 tokenExpiration.put(user.getToken(), new Date());
-                authResponse = new MyResponse(true, user.getToken());
+                success = true;
+                token = user.getToken();
                 status = Response.Status.OK;
-            }
-            else{
-                authResponse = new MyResponse(false, "");
+            } else {
                 status = Response.Status.UNAUTHORIZED;
             }
-        }
-        else{
-            authResponse = new MyResponse(false, "");
+        } else {
             status = Response.Status.FORBIDDEN;
         }
-        return Response.status(status).entity(authResponse).build();
+        return Response.status(status).entity("Success: " + success + " and  Token: " + token).build();
     }
-
 
     @POST
-    @Path("/logout/{username}")
+    @Path("/logout")
     @Produces("application/json")
-    public String logout(@FormParam("username") String username) {
-        User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
-
+    public Response logout(@FormParam("username") String username) {
+        User user = null;
+        for (User loggedInUser : loggedInUsers) {
+            if (loggedInUser.getName().equals(username))
+                user = loggedInUser;
+        }
         if (user == null) {
-            return "User does not exist!";
+            return Response.status(Response.Status.BAD_REQUEST).entity("No user with the name " + username + " is logged in.").build();
+        } else {
+            tokenUsername.remove(user.getToken());
+            tokenExpiration.remove(user.getToken());
+            user.destroyToken();
+            return Response.status(Response.Status.OK).entity("Logged out. Token successfully destroyed.").build();
         }
-        else {
-            if(user.getToken().equals("")) {
-                return "User Not logged in.";
-            }
-            else{
-                tokenUsername.remove(user.getToken());
-                tokenExpiration.remove(user.getToken());
-                user.destroyToken();
-                return "Logged out. Token succesfully destroyed.";
-            }
-        }
-
     }
-
 
     @POST
     @Path("/authentication")
     public Response validateToken(@HeaderParam("x-api-key") String token) {
-        if(tokenUsername.containsKey(token)){
+        if (tokenUsername.containsKey(token)) {
             Date timeNow = new Date();
             long diff = timeNow.getTime() - tokenExpiration.get(token).getTime();
             long tokenDuration = TimeUnit.MILLISECONDS.toMinutes(diff);
             System.out.println("Duration: " + tokenDuration);
-            if(tokenDuration > 30){
+            if (tokenDuration > 30) {
                 tokenUsername.remove(token);
                 tokenExpiration.remove(token);
-            }
-            else{
+            } else {
                 return Response.status(Response.Status.OK).entity("Token Correct").build();
             }
         }

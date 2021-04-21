@@ -7,18 +7,18 @@ import java.util.ArrayList;
 
 public class UserMapper extends DataMapper {
 
-    public static User select(String id) throws ClassNotFoundException, SQLException {
+    public static User select(String username) throws ClassNotFoundException, SQLException {
         User user = null;
         Connection connection;
         PreparedStatement statement;
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        statement = connection.prepareStatement("SELECT * FROM user WHERE id = ?");
-        statement.setString(1, id);
+        statement = connection.prepareStatement("SELECT * FROM user WHERE name = ?");
+        statement.setString(1, username);
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
             user = new User(
-                    id,
+                    resultSet.getString("id"),
                     resultSet.getString("name"),
                     resultSet.getString("password")
             );

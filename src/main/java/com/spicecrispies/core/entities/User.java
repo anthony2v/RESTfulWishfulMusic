@@ -21,9 +21,12 @@ public class User {
         this.token = "";
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id;
+    public void setId(String id) {
+        this.id = id;
     }
     public String getName() {
         return name;
@@ -45,17 +48,16 @@ public class User {
         return String.format("Username: %s", name);
     }
 
-    public String getToken() { return this.token; }
+    public String getToken() {
+        return this.token;
+    }
 
-    public void generateToken(){
+    public void generateToken() {
         String number = "0123456789";
         String lower = "abcdefghijklmnopqrstuvwxyz";
         String upper = lower.toUpperCase();
-
         String randomString = lower + upper + number;
 
-        //A stringBuilder is like variable-length array that contain
-        // a sequence of characters that can be changed during invocations
         StringBuilder sb = new StringBuilder(TOKEN_LENGTH);
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < TOKEN_LENGTH; i++) {
@@ -70,5 +72,4 @@ public class User {
     public void destroyToken(){
         this.token = "";
     }
-
 }
