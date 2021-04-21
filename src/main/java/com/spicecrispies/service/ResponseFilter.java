@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.Date;
 
 @Provider
-public class ServerInterceptor implements WriterInterceptor {
+public class ResponseFilter implements WriterInterceptor {
     @Context
     private UriInfo uriInfo;
     @Override
