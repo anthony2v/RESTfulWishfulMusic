@@ -16,12 +16,11 @@ import java.util.concurrent.TimeUnit;
 @Path("/user")
 public class AuthenticationREST {
 
-    private static ArrayList<User> users = new ArrayList<>();
     private static UserMapper userMapper = new UserMapper();
-    private static Map<String, String> tokenUsername = new HashMap<String, String>();
-    private static Map<String, Date> tokenExpiration = new HashMap<String, Date>();
+    private static ArrayList<User> users = new ArrayList<>();
+    public static Map<String, String> tokenUsername = new HashMap<String, String>();
+    public static Map<String, Date> tokenExpiration = new HashMap<String, Date>();
     public static String tokenHeader="";
-
 
 
     @POST

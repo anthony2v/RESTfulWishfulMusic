@@ -13,8 +13,7 @@ import java.io.IOException;
 @Provider
 public class ResponseFilter implements ContainerResponseFilter{
     @Override
-    public void filter(ContainerRequestContext requestContext,ContainerResponseContext responseContext)
-            throws IOException {
+    public void filter(ContainerRequestContext requestContext,ContainerResponseContext responseContext) throws IOException {
 
         responseContext.getHeaders().add("X-Powered-By", "RESTfulMusic");
         UriInfo uriInfo=requestContext.getUriInfo();
@@ -25,3 +24,5 @@ public class ResponseFilter implements ContainerResponseFilter{
         responseContext.getHeaders().add("Authorization-Token", AuthenticationREST.tokenHeader);
     }
 }
+
+//check if authorized then go to authenticated rest else error authentiCATION
