@@ -98,7 +98,7 @@ public class AuthenticationREST {
             Date timeNow = new Date();
             long diff = timeNow.getTime() - tokenExpiration.get(token).getTime();
             long tokenDuration = TimeUnit.MILLISECONDS.toMinutes(diff);
-            System.out.println("Duration: " + tokenDuration);
+            System.out.println("AUTHENTICATIONREST::VALIDATETOKEN() - Duration: " + tokenDuration);
             if (tokenDuration > 30) {
                 tokenUsername.remove(token);
                 tokenExpiration.remove(token);

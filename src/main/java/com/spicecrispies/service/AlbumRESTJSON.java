@@ -2,6 +2,7 @@ package com.spicecrispies.service;
 
 import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.QueryType;
+import com.spicecrispies.core.logging.LogEntry;
 import com.spicecrispies.persistence.AlbumMapper;
 import com.spicecrispies.repository.*;
 
@@ -25,18 +26,13 @@ public class AlbumRESTJSON {
     private static final AlbumRepoImplementation albumManager = (AlbumRepoImplementation)AlbumRepoFactory.getInstance();
     private static final LogManagerImplementation logManager = (LogManagerImplementation)LogManagerFactory.getInstance();
 
-
-    private static AlbumMapper albumMapper = new AlbumMapper();
-
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAlbum(Album album) {
         logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getId());
         try {
             if (albumManager.createAlbum(album)) {
-                albumMapper.insert(album);
-                return Response.status(Response.Status.OK).entity("Album successfully added to wishlist!").build();
+                return Response.status(Response.Status.OK).build();
             }
             else
                 return Response.status(Response.Status.CONFLICT).entity("Album already in wishlist!").build();
@@ -58,7 +54,6 @@ public class AlbumRESTJSON {
         logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);
         try {
             if (albumManager.deleteAlbum(id)) {
-                albumMapper.delete(id);
                 return Response.status(Response.Status.OK).entity("Album successfully deleted from wishlist!").build();
             }
             else
@@ -117,29 +112,25 @@ public class AlbumRESTJSON {
     }
 
     @GET
-    @Path("logs/{fromDate}/{toDate}/{queryType}")
-    public String getChangeLogs(@PathParam("fromDate") String fromDate,@PathParam("toDate") String toDate,@PathParam("queryType") String queryType) {
-        System.out.println("Change Logs");
-        return logManager.getChangeLogs(fromDate, toDate, queryType);
+    @Path("logs/{queryType}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChangeLogs(@PathParam("queryType") String queryType) {
+        //GenericEntity<List<LogEntry>> genericEntity = new GenericEntity<List<LogEntry>>(logManager.getChangeLogs(queryType)) {};
+        return Response.status(Response.Status.OK)/*.entity(genericEntity)*/.build();
     }
 
+    @DELETE
+    @Path("logs/clear")
     public void clearLogs() {
         logManager.clearLogs();
         System.out.println("Logs cleared");
     }
 
-
-    public ArrayList<Album> getAlbumInfo() throws SQLException, ClassNotFoundException {
-        return AlbumMapper.selectAll();
-    }
-
+    @GET
     @Path("search/{album}/{artist}")
-    public String search(@PathParam("album") String album, @PathParam("artist") String artist) throws IOException, ParseException {
-        System.out.println("Album: " + album + " , Artist: ");
-        System.out.println("Result : /n" );
-        return searchAlbums(album,artist).toString();
+    public Response search(@PathParam("album") String album, @PathParam("artist") String artist) throws IOException, ParseException {
+        ArrayList<Album> searchResults = searchAlbums(album,artist);
+        GenericEntity<List<Album>> genericEntity = new GenericEntity<List<Album>>(searchResults) {};
+        return Response.status(Response.Status.OK).entity(genericEntity).build();
     }
-
-
-
 }
