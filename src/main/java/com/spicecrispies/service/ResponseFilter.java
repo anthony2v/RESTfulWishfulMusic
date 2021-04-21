@@ -23,7 +23,7 @@ public class ResponseFilter implements ContainerResponseFilter {
         if (uriInfo.getPath().contains("user/register") || uriInfo.getPath().contains("user/login") || uriInfo.getPath().contains("user/logout")) {
             return;
         }
-        if (uriInfo.getPath().contains("album") && requestContext.getMethod().equals("POST") || requestContext.getMethod().equals("PUT") || requestContext.getMethod().equals("DELETE")) {
+        if (uriInfo.getPath().contains("album") && requestContext.getMethod().equals("POST") || requestContext.getMethod().equals("DELETE")) {
             String authorizationHeaderToken = requestContext.getHeaderString("x-api-key");
             if (!validateToken(authorizationHeaderToken) || authorizationHeaderToken == null || authorizationHeaderToken.equals("")) {
                 responseContext.setEntity("ACCESS DENIED");

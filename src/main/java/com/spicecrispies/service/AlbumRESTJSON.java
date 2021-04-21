@@ -3,7 +3,6 @@ package com.spicecrispies.service;
 import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.QueryType;
 import com.spicecrispies.core.logging.LogEntry;
-import com.spicecrispies.persistence.AlbumMapper;
 import com.spicecrispies.repository.*;
 
 import javax.ws.rs.*;
@@ -16,6 +15,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.simple.parser.ParseException;
 
 import static com.spicecrispies.service.AlbumDataAggregator.searchAlbums;
@@ -28,7 +33,10 @@ public class AlbumRESTJSON {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createAlbum(Album album) {
+    public Response createAlbum(@HeaderParam("x-api-key") String token, Album album) {
+        if (!validateToken(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getId());
         try {
             if (albumManager.createAlbum(album)) {
@@ -50,7 +58,10 @@ public class AlbumRESTJSON {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response deleteAlbum(@PathParam("id") String id) { //Remove from wishlist
+    public Response deleteAlbum(@HeaderParam("x-api-key") String token, @PathParam("id") String id) { //Remove from wishlist
+        if (!validateToken(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);
         try {
             if (albumManager.deleteAlbum(id)) {
@@ -115,8 +126,8 @@ public class AlbumRESTJSON {
     @Path("logs/{queryType}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getChangeLogs(@PathParam("queryType") String queryType) {
-        //GenericEntity<List<LogEntry>> genericEntity = new GenericEntity<List<LogEntry>>(logManager.getChangeLogs(queryType)) {};
-        return Response.status(Response.Status.OK)/*.entity(genericEntity)*/.build();
+        GenericEntity<List<String>> genericEntity = new GenericEntity<List<String>>(logManager.getChangeLogs(queryType)) {};
+        return Response.status(Response.Status.OK).entity(genericEntity).build();
     }
 
     @DELETE
@@ -132,5 +143,22 @@ public class AlbumRESTJSON {
         ArrayList<Album> searchResults = searchAlbums(album,artist);
         GenericEntity<List<Album>> genericEntity = new GenericEntity<List<Album>>(searchResults) {};
         return Response.status(Response.Status.OK).entity(genericEntity).build();
+    }
+
+    private boolean validateToken(String token) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(String.format("%suser/authentication", Main.BASE_URI));
+            httpPost.addHeader("x-api-key", token);
+            CloseableHttpResponse httpResponse = client.execute(httpPost);
+            HttpEntity entity = httpResponse.getEntity();
+            String isAuthenticated = EntityUtils.toString(entity);
+            httpResponse.close();
+            if(isAuthenticated.equals("true")){
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
