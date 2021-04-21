@@ -25,7 +25,7 @@ public class RequestFilter implements ContainerRequestFilter {
 
         if (generatedTime == null) {
             System.out.println("Token in Header is NOT VALID");
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by Filter!").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User not authenticated by Request Filter!").build());
             return ;
         }
         else // If the token is not changed

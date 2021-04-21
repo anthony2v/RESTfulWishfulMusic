@@ -24,7 +24,7 @@ public class AuthenticationREST {
 
 
     @POST
-    @Path("/register")
+    @Path("/register/{username}/{password}")
     @Produces("application/json")
     public String register(@FormParam("id") String id,@FormParam("username") String username, @FormParam("password") String password) throws SQLException, ClassNotFoundException {
         User user = new User(id,username, password);
@@ -35,7 +35,7 @@ public class AuthenticationREST {
 
 
     @POST
-    @Path("/login")
+    @Path("/login/{username}/{password}")
     @Produces("application/json")
     public Response login(@FormParam("username") String username, @FormParam("password") String password) {
         User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
@@ -63,7 +63,7 @@ public class AuthenticationREST {
 
 
     @POST
-    @Path("/logout")
+    @Path("/logout/{username}")
     @Produces("application/json")
     public String logout(@FormParam("username") String username) {
         User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
