@@ -27,7 +27,6 @@ public class AlbumRESTJSON {
     private static final AuthenticationREST authentication =  AuthenticationREST.getInstance();
 
 
-    private static Album albums = new Album();
     private static AlbumMapper albumMapper = new AlbumMapper();
 
 
@@ -36,8 +35,10 @@ public class AlbumRESTJSON {
     public Response createAlbum(Album album) {
         logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getId());
         try {
-            if (albumManager.createAlbum(album))
+            if (albumManager.createAlbum(album)) {
+                albumMapper.insert(album);
                 return Response.status(Response.Status.OK).entity("Album successfully added to wishlist!").build();
+            }
             else
                 return Response.status(Response.Status.CONFLICT).entity("Album already in wishlist!").build();
         } catch (ClassNotFoundException classNotFoundException) {
@@ -57,8 +58,10 @@ public class AlbumRESTJSON {
     public Response deleteAlbum(@PathParam("id") String id) { //Remove from wishlist
         logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);
         try {
-            if (albumManager.deleteAlbum(id))
+            if (albumManager.deleteAlbum(id)) {
+                albumMapper.delete(id);
                 return Response.status(Response.Status.OK).entity("Album successfully deleted from wishlist!").build();
+            }
             else
                 return Response.status(Response.Status.CONFLICT).entity("Album not found and deleted, please verify ID!").build();
         } catch (ClassNotFoundException classNotFoundException) {
@@ -138,45 +141,6 @@ public class AlbumRESTJSON {
         return searchAlbums(album,artist).toString();
     }
 
-    @Path("{userID}/{albumID}")
-    public Response addWishlist(@PathParam("userID") String userID, @PathParam("albumID") String albumID) throws IOException, ParseException, SQLException, ClassNotFoundException {
-        if (userID == null && albumID == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        if (userID == null && albumID != null) {
-            return Response.status(Response.Status.CONFLICT).entity("Error with USER ID!Please verify USER ID!").build();
-        }
-
-        if (userID != null && albumID == null) {
-            return Response.status(Response.Status.CONFLICT).entity("Error with ALBUM ID!Please verify ALBUM ID!").build();
-        }
-
-
-        albumMapper.insert(albums);
-
-        return Response.status(Response.Status.OK).entity("ADDED to wishlist!!").build();
-    }
-
-    @Path("removeWishlist/{userID}/{albumID}")
-    public Response removeWishlist(@PathParam("userID") String userID, @PathParam("albumID") String albumID) throws IOException, ParseException, SQLException, ClassNotFoundException {
-        if (userID == null && albumID == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        if (userID == null && albumID != null) {
-            return Response.status(Response.Status.CONFLICT).entity("Error with USER ID!Please verify USER ID!").build();
-        }
-
-        if (userID != null && albumID == null) {
-            return Response.status(Response.Status.CONFLICT).entity("Error with ALBUM ID!Please verify ALBUM ID!").build();
-        }
-
-        albumMapper.delete(albumID);
-
-        return Response.status(Response.Status.OK).entity("DELETED from wishlist!!").build();
-
-    }
 
 
 }
