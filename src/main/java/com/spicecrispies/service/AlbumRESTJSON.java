@@ -24,7 +24,6 @@ import static com.spicecrispies.service.AlbumDataAggregator.searchAlbums;
 public class AlbumRESTJSON {
     private static final AlbumRepoImplementation albumManager = (AlbumRepoImplementation)AlbumRepoFactory.getInstance();
     private static final LogManagerImplementation logManager = (LogManagerImplementation)LogManagerFactory.getInstance();
-    private static final AuthenticationREST authentication =  AuthenticationREST.getInstance();
 
 
     private static AlbumMapper albumMapper = new AlbumMapper();

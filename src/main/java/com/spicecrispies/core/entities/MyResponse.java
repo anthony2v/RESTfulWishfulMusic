@@ -2,17 +2,17 @@ package com.spicecrispies.core.entities;
 
 import java.io.Serializable;
 
-public class Response_two implements Serializable {
+public class MyResponse implements Serializable {
 
     private boolean success;
     private String token;
     private static final long serialVersionUID = 115L;
 
-    public Response_two(){
+    public MyResponse(){
         super();
     }
 
-    public Response_two(boolean success, String token){
+    public MyResponse(boolean success, String token){
         super();
         this.success = success;
         this.token = token;

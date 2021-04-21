@@ -31,8 +31,8 @@ public class LoginManager {
         users.put(username, user);
     }
 
-    public User getUser(String id) throws SQLException, ClassNotFoundException {
-        return UserMapper.select(id);
+    public String getUser(String id) throws SQLException, ClassNotFoundException {
+        return UserMapper.select(id).getName();
     }
 
     public String generateToken(String ID , String password){
@@ -71,3 +71,4 @@ public class LoginManager {
 
 
 }
+
