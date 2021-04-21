@@ -1,66 +1,107 @@
 package com.spicecrispies.service;
 
-import com.spicecrispies.core.entities.Response_two;
-import com.spicecrispies.repository.LoginManager;
+import com.spicecrispies.core.entities.MyResponse;
+import com.spicecrispies.core.entities.User;
+import com.spicecrispies.persistence.UserMapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Path("/user")
 public class AuthenticationREST {
 
-    public static AuthenticationREST getInstance() {
-        return AuthenticationREST.SingletonHolder.INSTANCE;
-    }
-    private static class SingletonHolder {
-        private static final AuthenticationREST INSTANCE = new AuthenticationREST();
-    }
+    private static UserMapper userMapper = new UserMapper();
+    private static ArrayList<User> users = new ArrayList<>();
+    public static Map<String, String> tokenUsername = new HashMap<String, String>();
+    public static Map<String, Date> tokenExpiration = new HashMap<String, Date>();
+    public static String tokenHeader="";
+
 
     @POST
-    @Path("/register/{id}/{username}/{password}")
+    @Path("/register/{username}/{password}")
     @Produces("application/json")
-    public String register(@PathParam("id")  String id,@PathParam("username")  String username, @PathParam("password") String password) throws SQLException, ClassNotFoundException {
-        LoginManager.getInstance().addUser(id,username,password);
-        return LoginManager.getInstance().getUser(username).toString();
+    public String register(@FormParam("id") String id,@FormParam("username") String username, @FormParam("password") String password) throws SQLException, ClassNotFoundException {
+        User user = new User(id,username, password);
+        users.add(user);
+        userMapper.insert(user);
+        return "User Created - : " + username;
     }
 
+
     @POST
-    @Path("/login/{ID}/{username}/{password}")
+    @Path("/login/{username}/{password}")
     @Produces("application/json")
-    public Response login(@PathParam("ID") String ID,@PathParam("username") String username, @PathParam("password") String password) {
-        Response_two authenticationResponse;
+    public Response login(@FormParam("username") String username, @FormParam("password") String password) {
+        User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
+        MyResponse authResponse;
         Response.Status status;
-        String token = LoginManager.getInstance().generateToken(ID,password);
-        if(token == null){
-            authenticationResponse = new Response_two(false, "");
+        if(user != null){
+            if(user.getPassword().equals(password)){
+                user.generateToken();
+                tokenUsername.put(user.getToken(), username);
+                tokenExpiration.put(user.getToken(), new Date());
+                authResponse = new MyResponse(true, user.getToken());
+                status = Response.Status.OK;
+            }
+            else{
+                authResponse = new MyResponse(false, "");
+                status = Response.Status.UNAUTHORIZED;
+            }
+        }
+        else{
+            authResponse = new MyResponse(false, "");
             status = Response.Status.FORBIDDEN;
         }
-        else{
-            authenticationResponse = new Response_two(true, token);
-            status = Response.Status.OK;
-        }
-        return Response.status(status).entity(authenticationResponse).build();
+        return Response.status(status).entity(authResponse).build();
     }
 
+
     @POST
-    @Path("/logout/{ID}")
+    @Path("/logout/{username}")
     @Produces("application/json")
-    public String logout(@PathParam("ID") String id) throws SQLException, ClassNotFoundException {
-        LoginManager.getInstance().getUser(id);
-        if (LoginManager.getInstance().getUser(id)== null){
+    public String logout(@FormParam("username") String username) {
+        User user = users.stream().filter(user1 -> user1.getName().equals(username)).findFirst().orElse(null);
+
+        if (user == null) {
             return "User does not exist!";
         }
-        else{
-            if (LoginManager.getInstance().getUser(id).getToken().equals("")) {
-                return "You are Not logged in.";
+        else {
+            if(user.getToken().equals("")) {
+                return "User Not logged in.";
             }
-            else
-            {
-                LoginManager.getInstance().removeToken(id);
-                return "Logged out. Token destroyed!!.";
+            else{
+                tokenUsername.remove(user.getToken());
+                tokenExpiration.remove(user.getToken());
+                user.destroyToken();
+                return "Logged out. Token succesfully destroyed.";
             }
         }
+
+    }
+
+
+    @POST
+    @Path("/authentication")
+    public Response validateToken(@HeaderParam("x-api-key") String token) {
+        if(tokenUsername.containsKey(token)){
+            Date timeNow = new Date();
+            long diff = timeNow.getTime() - tokenExpiration.get(token).getTime();
+            long tokenDuration = TimeUnit.MILLISECONDS.toMinutes(diff);
+            System.out.println("Duration: " + tokenDuration);
+            if(tokenDuration > 30){
+                tokenUsername.remove(token);
+                tokenExpiration.remove(token);
+            }
+            else{
+                return Response.status(Response.Status.OK).entity("Token Correct").build();
+            }
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Token Invalid").build();
     }
 }
