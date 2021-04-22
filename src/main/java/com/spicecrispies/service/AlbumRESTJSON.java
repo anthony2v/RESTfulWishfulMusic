@@ -36,7 +36,7 @@ public class AlbumRESTJSON {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAlbum(@HeaderParam("x-api-key") String token, Album album) {
-        if (!validateToken(token)) {
+        if (validateToken(token)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         logManager.addLog(LocalDateTime.now().toString(), QueryType.CREATE, album.getId());
@@ -61,7 +61,7 @@ public class AlbumRESTJSON {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public Response deleteAlbum(@HeaderParam("x-api-key") String token, @PathParam("id") String id) { //Remove from wishlist
-        if (!validateToken(token)) {
+        if (validateToken(token)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         logManager.addLog(LocalDateTime.now().toString(), QueryType.DELETE, id);

@@ -25,8 +25,8 @@ public class ResponseFilter implements ContainerResponseFilter {
         }
         if (uriInfo.getPath().contains("album") && requestContext.getMethod().equals("POST") || requestContext.getMethod().equals("DELETE")) {
             String authorizationHeaderToken = requestContext.getHeaderString("x-api-key");
-            if (!validateToken(authorizationHeaderToken) || authorizationHeaderToken == null || authorizationHeaderToken.equals("")) {
-                responseContext.setEntity("ACCESS DENIED");
+            if (!validateToken(authorizationHeaderToken)) {
+                //responseContext.setEntity("ACCESS DENIED");
             }
             else if (requestContext.getMethod().equals("POST")) {
                 responseContext.setEntity("Album added to wishlist of " + getUserFromToken(authorizationHeaderToken) + " at " + new Date());
