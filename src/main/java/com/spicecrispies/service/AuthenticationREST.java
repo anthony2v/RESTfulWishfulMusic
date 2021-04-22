@@ -108,4 +108,9 @@ public class AuthenticationREST {
         }
         return Response.status(Response.Status.UNAUTHORIZED).entity("Token Invalid").build();
     }
+
+    @GET
+    public Response getNameFromToken(@HeaderParam("x-api-key") String token) {
+        return Response.status(Response.Status.OK).entity(tokenUsername.get(token)).build();
+    }
 }

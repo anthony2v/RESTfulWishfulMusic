@@ -3,6 +3,7 @@ package com.spicecrispies.service;
 import com.spicecrispies.core.entities.Album;
 import com.spicecrispies.core.enums.QueryType;
 import com.spicecrispies.core.logging.LogEntry;
+import com.spicecrispies.persistence.UserAlbumMapper;
 import com.spicecrispies.repository.*;
 
 import javax.ws.rs.*;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -160,5 +162,20 @@ public class AlbumRESTJSON {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private String getUserFromToken(String token) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(String.format("%suser", Main.BASE_URI));
+            httpGet.addHeader("x-api-key", token);
+            CloseableHttpResponse httpResponse = client.execute(httpGet);
+            HttpEntity entity = httpResponse.getEntity();
+            String username = EntityUtils.toString(entity);
+            httpResponse.close();
+            return username;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
